@@ -1,0 +1,91 @@
+
+a{
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 8%;
+}
+.navbar ul{
+  padding: 10px 30px;
+  border-radius: 30px;
+  box-shadow: 0 0  30px 0 rgba(0,0,0,0.1);
+}
+.navbar ul li{
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 0 10px;
+}
+
+a.active{
+  color: red;
+
+}
+.navbar button{ 
+  background: #000;
+  color: #fff;
+  padding: 12px 25px;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  border-radius: 30px;
+  font-size: 15px;
+}
+.container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 45px;
+
+}
+.container h1{
+  font-size: 70px;
+  font-weight: 500;
+}
+.contact-btns{
+  display: flex;
+  padding-bottom: 20px;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+}
+.jobs{
+  padding: 40px 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.jobs a{
+  flex: 1;
+  text-decoration: none;
+  padding: 10px;
+  background: #efefef;
+  color:#000 ;
+}
+.job-details{
+  padding: 50px 0;
+}
+.job-details p{
+  max-width: 800px;
+  padding: 10px;
+}
+ button{
+  background-color: black;
+  color: white;
+  border: 0;
+  margin-top: 10px;
+  cursor: pointer;
+  outline: 0;
+  padding: 5px 10px;
+ }
+
+ 
+
+ @tailwind base;
+ @tailwind components;
+ @tailwind utilities
