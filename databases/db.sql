@@ -28,6 +28,9 @@ CREATE TABLE events (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- Cascade delete if user is deleted
 );
 
+ALTER TABLE events 
+ADD CONSTRAINT chk_event_dates CHECK (event_start_date < event_end_date);
+
 -- Create the Payments table
 CREATE TABLE payments (
     id INT AUTO_INCREMENT PRIMARY KEY, -- Unique payment ID
