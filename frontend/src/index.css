@@ -1,4 +1,6 @@
-
+body{
+  overflow-x: hidden;
+}
 a{
   text-decoration: none;
   color: inherit;
@@ -26,8 +28,6 @@ a.active{
 
 }
 .navbar button{ 
-  background: #000;
-  color: #fff;
   padding: 12px 25px;
   border: 0;
   outline: 0;

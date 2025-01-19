@@ -11,6 +11,7 @@ import RouteLayout from './Layouts/RouteLayout'
 import Login from './Components/Login'
 import ContactForm from './Components/ContactForm'
 import NotFound from './Components/NotFound'
+import AuthPage from './Pages/Auth'
 
 
 import Error from './Components/Error'
@@ -19,19 +20,19 @@ const App = () => {
 
   const Router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path='/' element={<RouteLayout />}>
- <Route index ='/' element={<HomePage/>} />
-  <Route path='CreateEvent' element={<CreateEvent/>} />
-  <Route path='EventDetails' element={<EventDetails/>} />
-    <Route path='EventListings' element={<ContactLayout/>}>  {/* // Nested route */} 
-  <Route path='info' element={<Login/>} />
-  <Route path='form' element={<ContactForm/>} />
-   </Route>
-   <Route path='Pay' element={<Pay/>} />
+        <Route path='/' element={<RouteLayout />}>
+        <Route index ='/' element={<HomePage/>} />
+        <Route path='/create-Event' element={<CreateEvent/>} />
+        <Route path='/event-details/:id/:title' element={<EventDetails/>} />
+        <Route path='/event-listings' element={<ContactLayout/>}>  {/* // Nested route */} 
+        <Route path='info' element={<Login/>} />
+        <Route path='form' element={<ContactForm/>} />
+        </Route>
+        <Route path='pay/:id/:title' element={<Pay/>} />
 
  
-
-<Route  path='*' element={<NotFound />} />
+        <Route path='authentication' element={<AuthPage/>} />
+        <Route  path='*' element={<NotFound />} />
 
 
       </Route>
@@ -40,11 +41,11 @@ const App = () => {
 
 
   return (
- <>
+ <div className='w-screen bg-gray-300 dark:bg-gray-900 dark:text-white transition-colors duration-300'>
 <RouterProvider router={(Router)} />
 
 
- </>
+ </ div>
   )
 }
 
