@@ -39,7 +39,7 @@ CREATE TABLE payments (
     participant_number VARCHAR(20) NOT NULL, -- Contact number of the participant
     amount DECIMAL(10, 2) NOT NULL,    -- Payment amount
     payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for payment
-    payment_method ENUM('Credit Card', 'PayPal', 'M-Pesa', 'Bank Transfer') NOT NULL, -- Payment method
+    payment_method VARCHAR(20) ENUM('Credit Card', 'PayPal', 'M-Pesa', 'Bank Transfer') NOT NULL, -- Payment method
     transaction_id VARCHAR(100) UNIQUE NOT NULL, -- Unique transaction ID
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE -- Cascade delete if event is deleted
 );
