@@ -11,7 +11,11 @@
   const PORT = process.env.PORT || 5000;
   
   // Middleware
-  app.use(cors());
+  app.use(cors(
+    { origin: '*', // Replace with your frontend URL 
+    methods: ['GET', 'POST'], 
+    allowedHeaders: ['Content-Type', 'Authorization'] }
+  ));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   
@@ -24,10 +28,12 @@
   app.post('/api/users/register', async (req, res) => {
     const { user_name, user_email, password } = req.body;
   
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     try {
       const [result] = await db.query(
         'INSERT INTO users (user_name, user_email, password) VALUES (?, ?, ?)',
-        [user_name, user_email, password]
+        [user_name, user_email, hashedPassword]
       );
       res.status(201).json({ message: 'User registered successfully!', userId: result.insertId });
     } catch (error) {
@@ -35,43 +41,47 @@
     }
   });
 
-  // User Login
-app.post('/api/users/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    // Query the database to find the user by email
-    const [rows] = await db.query('SELECT * FROM users WHERE user_email = ?', [email]);
-
-    // Check if the user exists
-    if (rows.length === 0) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+  // User login
+  app.post('/api/users/login', async (req, res) => {
+    const { user_email, password } = req.body;
+  
+    try {
+      // Check if the user exists
+      const [rows] = await db.query('SELECT * FROM users WHERE user_email = ?', [user_email]);
+  
+      if (rows.length === 0) {
+        return res.status(401).json({ error: 'Invalid email or password' });
+      }
+  
+      const user = rows[0];
+  
+      // Compare password using bcrypt
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ error: 'Invalid email or password' });
+      }
+  
+      // Create a JWT token
+      const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
+        expiresIn: '1h', // Token expiration time
+      });
+  
+      // Send a successful response
+      res.status(200).json({
+        message: 'Login successful',
+        token,
+        user: {
+          id: user.user_id,
+          name: user.user_name,
+          email: user.user_email,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to log in', details: error.message });
     }
-
-    const user = rows[0];
-
-    // Compare the plain-text password directly
-    if (password !== user.password) {
-      return res.status(401).json({ error: 'Invalid email or password' });
-    }
-
-    // Create JWT token
-    const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
-      expiresIn: '1h', // Set token expiration time
-    });
-
-    // Respond with the token and user information
-    res.status(200).json({
-      message: 'Login successful',
-      token,
-      user: { id: user.user_id, name: user.user_name, email: user.user_email },
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to log in', details: error.message });
-  }
-}); 
-
-
+});
+  
   // Fetch all events
   app.get('/api/events', async (req, res) => {
     try {
