@@ -41,20 +41,26 @@ Tabitha Wanjiku
 - **State Management**: Leverages React's context API or other libraries like Redux (if used).
 - **Form Validation**: User-friendly forms with validation for event creation and editing.
 
-  Find the UI Design Below
-**Login Page**
+  ### Find the UI Design Below
+  
+## Login Page
+
 ![WhatsApp Image 2025-01-18 at 21 05 31_196541c5](https://github.com/user-attachments/assets/963b5073-ba6e-4f76-829f-777aacff513c)
 
-**Landing page**
+## Landing page
+
 ![WhatsApp Image 2025-01-18 at 21 05 32_c39f3388](https://github.com/user-attachments/assets/e854e560-ef1b-4126-8796-ba263089d446)
 
-**Create Event Page**
+## Create Event Page
+
 ![WhatsApp Image 2025-01-18 at 21 05 46_2b02c817](https://github.com/user-attachments/assets/3f15e564-3c26-44b5-8f45-22a3bc6d4db1)
 
-**Event Details Page**
+## Event Details Page
+
 ![WhatsApp Image 2025-01-18 at 21 05 32_668f895d](https://github.com/user-attachments/assets/7a7d266c-ac0d-4ee7-b3c1-510c96ce7051)
 
-**Payment Page**
+## Payment Page
+
 ![WhatsApp Image 2025-01-18 at 21 05 45_3ef4b35a](https://github.com/user-attachments/assets/16df393c-7271-43fa-beb2-33d81b0a75df)
 
 
