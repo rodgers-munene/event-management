@@ -8,16 +8,45 @@ const CreateEvent = () => {
     description: '',
     startDate: '',
     endDate: '',
-    startTime: '',
-    endTime: '',
     image: null,
     ticketPrice: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission
-    console.log('Form submitted:', formData);
+   
+    const form = new FormData();
+
+    form.append('title', formData.title);
+    form.append('description', formData.description);
+    form.append('startDate', formData.startDate);
+    form.append('endDate', formData.endDate);
+    form.append('ticketPrice', formData.ticketPrice);
+    //form.append('image_url', formData.image_url);
+
+    // Check if image file exists, then append it
+    if (formData.image) {
+      form.append('image', formData.image);
+    }
+
+    try {
+      // Post the form data to the backend API
+      const response = await fetch('http://localhost:5000/api/events', {
+        method: 'POST',
+        body: form
+      });
+
+      // Check if the request was successful
+      if (response.ok) {
+        alert('Event created successfully!');
+      } else {
+        alert('Error creating event!');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error submitting the form');
+    }
   };
 
   return (
@@ -30,7 +59,7 @@ const CreateEvent = () => {
             <Gift className="w-6 h-6" />
             <span className="font-semibold text-xl">EventPro</span>
           </div>
-          <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
+          <button type="submit" onclick={handleSubmit} className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
             Save Event
           </button>
         </div>
@@ -107,34 +136,7 @@ const CreateEvent = () => {
              </div>
           </div>
 
-          
 
-          <div className="space-y-2 flex w-full justify-between items-end">
-           <div>
-            <label className="block text-sm font-medium">
-                Start Time
-              </label>
-              <input
-                type="time"
-                placeholder="6:00 PM"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                value={formData.startTime}
-                onChange={(e) => setFormData({...formData, startTime: e.target.value})}
-              />
-            </div>
-             <div>
-              <label className="block text-sm font-medium">
-                End Time
-              </label>
-              <input
-                type="Time"
-                placeholder="10:30 PM"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                value={formData.endTime}
-                onChange={(e) => setFormData({...formData, endTime: e.target.value})}
-              />
-             </div>
-          </div>
 
           <div className="space-y-2">
             <label className="block text-sm font-medium">

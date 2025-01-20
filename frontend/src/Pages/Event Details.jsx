@@ -1,53 +1,41 @@
 import React from 'react'
-import  { useState } from 'react';
+import  { useState, useEffect } from 'react';
 import { Gift } from 'lucide-react';
-import img9 from'../assets/images/9.jpg'
-import img5 from'../assets/images/5.jpg'
-import img7 from'../assets/images/7.jpg'
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { fetchEventById } from '../../api';
 
 
 const EventDetails = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const {id} = useParams();
-  
-  
-  const events = [
-    {
-      id: 1,
-      title: "Summer Music Fest",
-      date: "August 15, 2023",
-      description: "Join us for an unforgettable night of music and fun at the annual Summer Music Fest.",
-      image: img5,
-      location: "Location: Madison Square Garden, New York",
-      price: "$200"
-    },
-    {
-      id: 2,
-      title: "Gourmet Food Expo",
-      date: "September 10, 2023",
-      description: "Explore the latest trends in gourmet cuisine at the Gourmet Food Expo.",
-      image: img7,
-      location: "Location: San Francisco, California",
-      price: "$150"
-    },
-    {
-      id: 3,
-      title: "Tech Innovators Conference",
-      date: "October 5, 2023",
-      description: "Discover the future of technology at the Tech Innovators Conference.",
-      image: img9,
-      location: "Location: Seattle, Washington",
-      price: "$250"
-    }
-  ]
-  
-  const eventDetail = events.find((event) => event.id === parseInt(id));
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+ 
 
-    if(!eventDetail) {
-      return <Error message="Event not found" />;
+  useEffect(() => {
+    async function loadEvent() {
+      try {
+        const data = await fetchEventById(id);
+        
+        setEvent(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     }
+
+    loadEvent();
+  }, [id]);
+
+  const imageUrl = event?.image_url || 'default-image-url.jpg'
+  
+  //const eventDetail = events.find((event) => event.id === parseInt(id));
+
+  //  if(!eventDetail) {
+  //   return <Error message="Event not found" />;
+  // }
     
   
   return (
@@ -63,26 +51,27 @@ const EventDetails = () => {
               <h2 className="text-2xl font-bold mb-6">Event Details</h2>
               <div className="space-y-6">
                 <img 
-                  src={eventDetail.image}
+                  src={imageUrl}
                   alt="Rock concert"
                   className="w-full h-48 object-cover rounded-lg"
                 />
                 <div>
-                  <h2 className="text-xl font-bold">{eventDetail.title}</h2>
+                  <h2 className="text-xl font-bold">{event?.event_title}</h2>
                   <div className="text-gray-700 dark:text-gray-300 mt-2">
-                    <p>{eventDetail.date}</p>
-                    <p>{eventDetail.location}</p>
+                    <p>{event?.event_start_date}</p>
+                    <p>{event?.event_end_date}</p>
+                    <p>{event?.event_location}</p>
                   </div>
                 </div>
                 <p className="text-gray-700 dark:text-gray-300">
-                  {eventDetail.description}
+                  {event?.event_description}
                 </p>
                 <div className='w-full flex justify-between items-center'>
                   <button className="bg-black text-white px-4 py-2 rounded-md ">
                     Update Event
                   </button>
                   <Link 
-                  to={`/pay/${id}/${eventDetail.title.replace(/\s+/g, '-').toLowerCase()}`}
+                  to={`/pay/${id}/${(event?.event_title || 'untitled').replace(/\s+/g, '-').toLowerCase()}`}
                   className='bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800'>
                     Register
                   </Link>

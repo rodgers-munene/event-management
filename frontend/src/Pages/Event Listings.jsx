@@ -1,30 +1,40 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import img5 from '../assets/images/5.jpg'
-import img7 from '../assets/images/7.jpg'
-import img9 from '../assets/images/9.jpg'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { fetchAllEvents } from '../../api'
+import { Import } from 'lucide-react'
 
 
 const navigate = useNavigate
 
-    const EventCard = ({ id, title, date, description, image }) => (
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
+
+    const EventCard = ({ id, event_title, event_start_date,event_end_date, event_description, image_url }) => (
 
 
       <div className="bg-gray-300 dark:bg-gray-700 rounded-lg shadow-lg overflow-hidden">
-        <img src={image} alt={title} className="w-full h-48 object-cover"/>
+        <img src={image_url} alt={event_title} className="w-full h-48 object-cover"/>
         <div className="p-4">
-          <h2 className="text-base sm:text-xl font-bold mb-2">{title}</h2>
-          <p className="text-gray-700 dark:text-gray-100 text-sm mb-2">{date}</p>
-          <p className="text-gray-900 dark:text-gray-400 mb-4">{description}</p>
+          <h2 className="text-base sm:text-xl font-bold mb-2">{event_title}</h2>
+          <p className="text-gray-700 dark:text-gray-100 text-sm mb-2">{formatDate(event_start_date)}</p>
+          <p className="text-gray-700 dark:text-gray-100 text-sm mb-2">{formatDate(event_end_date)}</p>
+          <p className="text-gray-900 dark:text-gray-400 mb-4">{event_description}</p>
           <div className="flex gap-2">
             <Link
-              to={`/event-details/${id}/${title.replace(/\s+/g, '-').toLowerCase()}`}
+              to={`/event-details/${id}/${(event_title || 'untitled').replace(/\s+/g, '-').toLowerCase()}`}
               className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
               View Details
             </Link>
             <Link
-              to={`/pay/${id}/${title.replace(/\s+/g, '-').toLowerCase()}`}
+              to={`/pay/${id}/${(event_title || 'untitled').replace(/\s+/g, '-').toLowerCase()}`}
              className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
               Register
             </Link>
@@ -35,29 +45,23 @@ const navigate = useNavigate
     
     const EventListings = () => {
       const navigate = useNavigate()
-      const events = [
-        {
-          id: 1,
-          title: "Summer Music Fest",
-          date: "August 15, 2023",
-          description: "Join us for an unforgettable night of music and fun at the annual Summer Music Fest.",
-          image: img5
-        },
-        {
-          id: 2, 
-          title: "Gourmet Food Expo",
-          date: "September 10, 2023",
-          description: "Explore the latest trends in gourmet cuisine at the Gourmet Food Expo.",
-          image: img7
-        },
-        {
-          id: 3,
-          title: "Tech Innovators Conference",
-          date: "October 5, 2023",
-          description: "Discover the future of technology at the Tech Innovators Conference.",
-          image: img9
+      const [events, setEvents] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        async function loadEvents() {
+          try {
+            const data = await fetchAllEvents();
+            setEvents(data);
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setLoading(false);
+          }
         }
-      ];
+    
+        loadEvents();
+      }, []);
     
       return (
         <div className="min-h-screen bg-gray-200 dark:bg-gray-600  w-screen">

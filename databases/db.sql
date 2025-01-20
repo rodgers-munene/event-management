@@ -39,11 +39,11 @@ CREATE TABLE events (
 -- Populate the events table
 INSERT INTO events (user_id, event_title, event_description, event_start_date, event_end_date, event_location, event_price, image_url) 
 VALUES 
-(3, 'Tech Conference 2025', 'A conference for tech enthusiasts.', '2025-03-15 09:00:00', '2025-03-15 17:00:00', 'New York City', 50.00, 'https://example.com/tech_conf.jpg'),
-(4, 'Music Festival', 'A fun music festival for all ages.', '2025-04-20 12:00:00', '2025-04-20 22:00:00', 'Los Angeles', 75.00, 'https://example.com/music_fest.jpg'),
-(5, 'Art Exhibition', 'A showcase of local art talent.', '2025-05-05 10:00:00', '2025-05-05 18:00:00', 'Chicago', 25.00, 'https://example.com/art_exhibit.jpg'),
-(6, 'Startup Pitch Night', 'Pitch night for entrepreneurs and investors.', '2025-06-10 18:00:00', '2025-06-10 21:00:00', 'San Francisco', 100.00, 'https://example.com/startup_pitch.jpg'),
-(7, 'Food Fair', 'A fair featuring international cuisines.', '2025-07-01 11:00:00', '2025-07-01 20:00:00', 'Houston', 30.00, 'https://example.com/food_fair.jpg');
+(1, 'Tech Conference 2025', 'A conference for tech enthusiasts.', '2025-03-15 09:00:00', '2025-03-15 17:00:00', 'New York City', 50.00, ''https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIsAxKjvKu7Fgo8gl_M3A3lS8AV2TQc_Ecuw&s''),
+(2, 'Music Festival', 'A fun music festival for all ages.', '2025-04-20 12:00:00', '2025-04-20 22:00:00', 'Los Angeles', 75.00, ''https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSracS428Jk0ZQFibCGuIVcaKUj9BuIh1Fv3Q&s''),
+(3, 'Art Exhibition', 'A showcase of local art talent.', '2025-05-05 10:00:00', '2025-05-05 18:00:00', 'Chicago', 25.00, ''https://media.istockphoto.com/id/1218961153/photo/art-museum.jpg?s=612x612&w=0&k=20&c=9fK54fu1mjzFjDOSqg_jfrMy4Hkp8vsmImB7rLrbhJs=''),
+(4, 'Startup Pitch Night', 'Pitch night for entrepreneurs and investors.', '2025-06-10 18:00:00', '2025-06-10 21:00:00', 'San Francisco', 100.00, ''https://media.licdn.com/dms/image/v2/C5612AQFkpIXMgHfeEA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1540265171294?e=2147483647&v=beta&t=U72fngSz6iWHKsGd8C6z9joKg4dCgcvxvT9aOZnxTV0''),
+(5, 'Food Fair', 'A fair featuring international cuisines.', '2025-07-01 11:00:00', '2025-07-01 20:00:00', 'Houston', 30.00, ''https://media.istockphoto.com/id/1051006024/photo/happy-kids-eating-junk-food-at-an-amusement-park.jpg?s=612x612&w=0&k=20&c=of7zLl75fr_QWi3tuvZ-c2lMFffCfpB-pNzmNUO8Kwc='');
 
 -- Create the Payments table
 CREATE TABLE payments (

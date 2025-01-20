@@ -1,54 +1,31 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import img9 from'../assets/images/9.jpg'
-import img5 from'../assets/images/5.jpg'
-import img7 from'../assets/images/7.jpg'
+import { fetchEventById } from '../../api';
 
 const Pay = () => {
       const {id} = useParams();
-      const events = [
-          {
-            id: 1,
-            title: "Summer Music Fest",
-            date: "August 15, 2023",
-            description: "Join us for an unforgettable night of music and fun at the annual Summer Music Fest.",
-            image: img5,
-            location: "Location: Madison Square Garden, New York",
-            price: "$200",
-            time: "8:00am-5:00pm"
-          },
-          {
-            id: 2,
-            title: "Gourmet Food Expo",
-            date: "September 10, 2023",
-            description: "Explore the latest trends in gourmet cuisine at the Gourmet Food Expo.",
-            image: img7,
-            location: "Location: San Francisco, California",
-            price: "$150",
-            time: "8:00am-5:00pm"
-          },
-          {
-            id: 3,
-            title: "Tech Innovators Conference",
-            date: "October 5, 2023",
-            description: "Discover the future of technology at the Tech Innovators Conference.",
-            image: img9,
-            location: "Location: Seattle, Washington",
-            price: "$250",
-            time: "8:00am-5:00pm"
-          }
-        ]
+      const [event, setEvent] = useState(null);
+      const [loading, setLoading] = useState(true);
 
-        const eventDetail = events.find((event) => event.id === parseInt(id));
-  
-        if(!eventDetail) {
-          return <Error message="Event not found" />;
+      useEffect(() => {
+        async function loadEvent() {
+          try {
+            const data = await fetchEventById(id);
+            setEvent(data);
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setLoading(false);
+          }
         }
+    
+        loadEvent();
+      }, [id]);
         
         const [formData, setFormData] = useState({
         name: '',
-        amount: eventDetail.price,
+        amount: event?.event_price,
         phone: '+254'
       });
     
@@ -76,17 +53,18 @@ const Pay = () => {
               <div className="w-full md:w-1/3">
                 <div className="bg-gray-200 dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-4">
                   <h2 className="text-xl font-bold mb-4">Event Summary</h2>
-                  <h3 className="text-lg font-semibold">{eventDetail.title}</h3>
+                  <h3 className="text-lg font-semibold">{event?.event_title}</h3>
                   <div className="space-y-2 mt-2 text-gray-700 dark:text-gray-100">
-                    <p>{eventDetail.date}</p>
-                    <p>{eventDetail.location}</p>
-                    <p>T{eventDetail.time}</p>
+                    <p>{event?.event_start_date}</p>
+                    <p>{event?.event_end_date}</p>
+                    <p>{event?.event_location}</p>
+            
                   </div>
                 </div>
                 
                 <div className="bg-gray-200 dark:bg-gray-800 rounded-lg shadow-sm p-6">
                   <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-100">Total Cost</h2>
-                  <p className="text-xl mt-2 text-gray-700 dark:text-gray-100">{eventDetail.price}</p>
+                  <p className="text-xl mt-2 text-gray-700 dark:text-gray-100">{event?.event_price}</p>
                 </div>
               </div>
     
