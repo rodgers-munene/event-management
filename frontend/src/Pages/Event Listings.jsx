@@ -14,7 +14,7 @@ const navigate = useNavigate
       <div className="bg-gray-300 dark:bg-gray-700 rounded-lg shadow-lg overflow-hidden">
         <img src={image} alt={title} className="w-full h-48 object-cover"/>
         <div className="p-4">
-          <h2 className="text-xl font-bold mb-2">{title}</h2>
+          <h2 className="text-base sm:text-xl font-bold mb-2">{title}</h2>
           <p className="text-gray-700 dark:text-gray-100 text-sm mb-2">{date}</p>
           <p className="text-gray-900 dark:text-gray-400 mb-4">{description}</p>
           <div className="flex gap-2">
@@ -60,7 +60,7 @@ const navigate = useNavigate
       ];
     
       return (
-        <div className="min-h-screen bg-gray-200 dark:bg-gray-600">
+        <div className="min-h-screen bg-gray-200 dark:bg-gray-600  w-screen">
           {/* Navigation */}
           <nav className="bg-gray-300 dark:bg-gray-700 shadow-md">
             <div className="max-w-7xl mx-auto px-4 py-3">
@@ -80,7 +80,7 @@ const navigate = useNavigate
                 className="p-2 w-[70%] border border-gray-300 rounded"
               />
               <button className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900">
-                Search Event
+                Search
               </button>
               {/* <button className="px-4 py-2 border bg-gray-600 dark:bg-gray-400 text-white dark:text-black  border-gray-300 rounded">
                 Filter
@@ -105,9 +105,9 @@ const navigate = useNavigate
             <div className="max-w-7xl mx-auto px-4">
               <div className="flex justify-between items-center">
                 <div className="flex items-center">
-                  <p className="text-gray-400 dark:text-gray-900">About Us</p>
-                  <p className="mx-3 text-gray-400 dark:text-gray-900">Contact</p>
-                  <p className="text-gray-400 dark:text-gray-900">Privacy Policy</p>
+                  <p className="text-sm sm:text-base text-gray-400 dark:text-gray-900">About Us</p>
+                  <p className="text-sm sm:text-base mx-3 text-gray-400 dark:text-gray-900">Contact</p>
+                  <p className="text-sm sm:text-base text-gray-400 dark:text-gray-900">Privacy Policy</p>
                 </div>
                 <div className="flex space-x-4">
                   <a href="#" className="hover:text-gray-600">

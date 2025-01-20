@@ -20,20 +20,20 @@ const HomePage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col mr-0">
+    <div className="min-h-screen flex flex-col mr-0 w-screen mx-auto">
   
 
       {/* Hero Section */}
-      <section className="relative h-[500px] bg-black ">
+      <section className="relative h-[300px] sm:h-[500px] bg-black">
         <img
           src={img4}
           alt="Concert lights"
           className="w-full h-full object-cover opacity-80"
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-          <h1 className="text-5xl font-bold text-center mb-6">
+          <p className="text-3xl sm:text-5xl font-semibold sm:font-bold text-center mb-6">
             Plan Your Perfect Event with EventPro
-          </h1>
+          </p>
           <button
              onClick={handleExplore}
              className="px-6 py-3 bg-indigo-900 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-gray-300 transition duration-300 font-semibold">
@@ -45,7 +45,7 @@ const HomePage = () => {
       {/* Features Section */}
       <section className="py-16 px-6 bg-gray-200 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12">Features</h2>
+          <h2 className=" text-2xl sm:text-3xl font-bold mb-12">Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-gray-300 dark:bg-gray-700 p-8 text-center rounded-lg">
               <Music className="w-8 h-8 mx-auto mb-4" />
@@ -75,7 +75,7 @@ const HomePage = () => {
       {/* Testimonials Section */}
       <section className="py-16 px-6 bg-gray-100 dark:bg-gray-700">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 dark:text-white text-black">What Our Users Say</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-12 dark:text-white text-black">What Our Users Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
@@ -108,11 +108,11 @@ const HomePage = () => {
       </section>
 
       {/* Sign Up Section */}
-      <section className="py-16 px-6 bg-gray-200 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h2 className="text-3xl font-bold mb-6 ">Join EventPro Today!</h2>
-            <p className="text-gray-700 dark:text-gray-300 mb-8">
+      <section className="py-16 px-4 bg-gray-200 dark:bg-gray-800">
+        <div className="flex flex-col md:flex-row items-center justify-between p-2 sm:p-8 rounded-lg shadow-lg">
+          <div className='md:w-[45%]'>
+            <h2 className="text-xl sm:text-3xl font-bold mb-6 ">Join EventPro Today!</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-8 text-sm sm:text-base">
               Sign up now to start planning your events with ease and efficiency. 
               Don't miss out on our exclusive features designed to make your event a success.
             </p>
@@ -131,11 +131,11 @@ const HomePage = () => {
 
             </div>
           </div>
-          <div>
+          <div className='mt-6 md:mt-0 md:w-[45%] flex justify-center'>
             <img
               src={img9}
               alt="Event planning"
-              className="rounded-lg shadow-lg ml-40"
+              className="rounded-lg shadow-lg"
             />
           </div>
         </div>
@@ -154,9 +154,9 @@ const HomePage = () => {
               <Twitter className="w-6 h-6" />
             </div>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 dark:text-gray-900 hover:text-white">Privacy Policy</a>
-              <a href="#" className="text-gray-400 dark:text-gray-900 hover:text-white">Terms of Service</a>
-              <a href="#" className="text-gray-400 dark:text-gray-900 hover:text-white">Contact Us</a>
+              <a href="#" className="text-sm sm:text-base text-gray-400 dark:text-gray-900 hover:text-white">Privacy Policy</a>
+              <a href="#" className="text-sm sm:text-base text-gray-400 dark:text-gray-900 hover:text-white">Terms of Service</a>
+              <a href="#" className="text-sm sm:text-base text-gray-400 dark:text-gray-900 hover:text-white">Contact Us</a>
             </div>
           </div>
         </div>

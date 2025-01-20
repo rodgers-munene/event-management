@@ -59,7 +59,7 @@ const Pay = () => {
 
     
       return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-700">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-700 w-screen">
           {/* Navigation */}
           <nav className="bg-gray-300 dark:bg-gray-700 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 py-3">

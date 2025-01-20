@@ -21,7 +21,8 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="min-h-screen w-[30rem] flex flex-col bg-gray-100 dark:bg-gray-700 dark:text-white">
+    <div className='w-screen flex justify-center'>
+      <div className="min-h-screen w-80 sm:w-[30rem] flex flex-col bg-gray-100 dark:bg-gray-700 dark:text-white">
       {/* Header */}
       <header className=" shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -37,7 +38,7 @@ const CreateEvent = () => {
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 w-full">
-        <h2 className="text-4xl font-bold mb-8">Create New Event</h2>
+        <h2 className="text-2xl sm:text-4xl font-bold mb-8">Create New Event</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -80,14 +81,14 @@ const CreateEvent = () => {
             </div>
 
           <div className="space-y-2 flex w-full justify-between items-end">
-           <div>
+           <div className='w-full'>
             <label className="block text-sm font-medium">
                 Start Date
               </label>
               <input
                 type="date"
                 placeholder="YYYY-MM-DD"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                className="w-[90%] sm:w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                 value={formData.startDate}
                 onChange={(e) => setFormData({...formData, startDate: e.target.value})}
               />
@@ -99,7 +100,7 @@ const CreateEvent = () => {
               <input
                 type="date"
                 placeholder="YYYY-MM-DD"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                className="w-[90%] sm:w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                 value={formData.endDate}
                 onChange={(e) => setFormData({...formData, endDate: e.target.value})}
               />
@@ -179,6 +180,7 @@ const CreateEvent = () => {
           </div>
         </div>
       </footer>
+    </div>
     </div>
   );
 };

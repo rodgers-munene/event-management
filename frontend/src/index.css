@@ -10,17 +10,17 @@ a{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 8%;
+  width: 100vw;
+  /* padding: 15px 8%; */
 }
 .navbar ul{
-  padding: 10px 30px;
-  border-radius: 30px;
-  box-shadow: 0 0  30px 0 rgba(0,0,0,0.1);
+  /* padding: 10px 30px; */
+  
 }
 .navbar ul li{
   display: inline-block;
-  padding: 5px 10px;
-  margin: 0 10px;
+  /* padding: 5px 10px; */
+  /* margin: 0 10px; */
 }
 
 a.active{
@@ -32,16 +32,9 @@ a.active{
   border: 0;
   outline: 0;
   cursor: pointer;
-  border-radius: 30px;
   font-size: 15px;
 }
-.container{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 45px;
 
-}
 .container h1{
   font-size: 70px;
   font-weight: 500;
