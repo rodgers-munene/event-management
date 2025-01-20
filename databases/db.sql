@@ -11,6 +11,14 @@ CREATE TABLE users (
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Timestamp when the user was created
 );
 
+-- Populate the users table
+INSERT INTO users (user_name, user_email, password) 
+VALUES 
+('John Doe', 'john.doe@example.com', 'hashedpassword1'),
+('Jane Smith', 'jane.smith@example.com', 'hashedpassword2'),
+('Michael Brown', 'michael.brown@example.com', 'hashedpassword3'),
+('Emily Davis', 'emily.davis@example.com', 'hashedpassword4'),
+('David Wilson', 'david.wilson@example.com', 'hashedpassword5');
 
 -- Create the Events table
 CREATE TABLE events (
@@ -28,8 +36,14 @@ CREATE TABLE events (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- Cascade delete if user is deleted
 );
 
-ALTER TABLE events 
-ADD CONSTRAINT chk_event_dates CHECK (event_start_date < event_end_date);
+-- Populate the events table
+INSERT INTO events (user_id, event_title, event_description, event_start_date, event_end_date, event_location, event_price, image_url) 
+VALUES 
+(3, 'Tech Conference 2025', 'A conference for tech enthusiasts.', '2025-03-15 09:00:00', '2025-03-15 17:00:00', 'New York City', 50.00, 'https://example.com/tech_conf.jpg'),
+(4, 'Music Festival', 'A fun music festival for all ages.', '2025-04-20 12:00:00', '2025-04-20 22:00:00', 'Los Angeles', 75.00, 'https://example.com/music_fest.jpg'),
+(5, 'Art Exhibition', 'A showcase of local art talent.', '2025-05-05 10:00:00', '2025-05-05 18:00:00', 'Chicago', 25.00, 'https://example.com/art_exhibit.jpg'),
+(6, 'Startup Pitch Night', 'Pitch night for entrepreneurs and investors.', '2025-06-10 18:00:00', '2025-06-10 21:00:00', 'San Francisco', 100.00, 'https://example.com/startup_pitch.jpg'),
+(7, 'Food Fair', 'A fair featuring international cuisines.', '2025-07-01 11:00:00', '2025-07-01 20:00:00', 'Houston', 30.00, 'https://example.com/food_fair.jpg');
 
 -- Create the Payments table
 CREATE TABLE payments (
@@ -43,3 +57,12 @@ CREATE TABLE payments (
     transaction_id VARCHAR(100) UNIQUE NOT NULL, -- Unique transaction ID
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE -- Cascade delete if event is deleted
 );
+
+-- Populate the payments table
+INSERT INTO payments (event_id, participant_name, participant_number, amount, payment_method, transaction_id) 
+VALUES 
+(26, 'Alice Johnson', '1234567890', 50.00, 'Credit Card', 'TXN12345'),
+(27, 'Robert Lee', '9876543210', 50.00, 'PayPal', 'TXN12346'),
+(28, 'Sophia Martinez', '1122334455', 75.00, 'M-Pesa', 'TXN12347'),
+(29, 'James Anderson', '5566778899', 25.00, 'Bank Transfer', 'TXN12348'),
+(30, 'Charlotte Wilson', '2233445566', 100.00, 'Credit Card', 'TXN12349');

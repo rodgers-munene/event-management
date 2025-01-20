@@ -81,6 +81,25 @@ app.post('/api/users/login', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch events.', details: error.message });
     }
   });
+
+  // Fetch events details
+  app.get('/api/events/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const [rows] = await db.query('SELECT * FROM events WHERE id = ?', [id]);
+  
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Event not found.' });
+      }
+  
+      res.status(200).json(rows[0]);
+    } catch (error) {
+      console.error('Error fetching event:', error);
+      res.status(500).json({ error: 'Failed to fetch event details.', details: error.message });
+    }
+  });
+  
   
   // Create new event
   app.post('/api/events', async (req, res) => {
