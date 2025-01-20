@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FaCalendarAlt } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import BASE_URL from '../../api';
 
 
 
@@ -8,6 +9,8 @@ const Login = () => {
     const { toggleAuthForm } = useAuth();
     const [password, setPassword] = useState('')
     const [isAlert, setIsAlert] = useState('')
+    const [user_email, setuser_email] = useState('');
+    const [loading, setLoading] = useState(false);
    
 
     // validate the form
@@ -22,17 +25,46 @@ const Login = () => {
             setTimeout(() => {
                 setIsAlert('');
             }, 3000);
-            
+            return false;
         }
+
+        return true;
     }
 
     // prevent the default form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
             setIsAlert('Form submitted')
+
+            setLoading(true);
+            try {
+                const response = await fetch(`${BASE_URL}/api/users/login`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ email, password }),
+                });
+          
+                if (response.ok) {
+                  const data = await response.json();
+                  // Handle successful login (e.g., store JWT token or user info)
+                  alert('Login successful');
+                  // Redirect or update state with user data here
+                } else {
+                  const errorData = await response.json();
+                  setIsAlert(errorData.error || 'Login failed');
+                }
+              } catch (error) {
+                console.error('Login error:', error);
+                setIsAlert('An error occurred. Please try again later.');
+              } finally {
+                setLoading(false);
+              }
+            };
           }
-    }
+        
   return (
     <div className='w-auto max-h-[23rem] bg-gray-100 dark:bg-gray-700 dark:text-white shadow-xl rounded-lg flex flex-col justify-between p-4'>
             
@@ -47,6 +79,8 @@ const Login = () => {
                     type='email' 
                     id='email' 
                     placeholder='Email' 
+                    value={user_email}
+                    onChange={(e) => setuser_email(e.target.value)}
                     className='border border-gray-300 p-2 my-2 text-black' 
                     required/>
                 </div>
@@ -67,7 +101,7 @@ const Login = () => {
                 </div>
                 
                 <div className='flex justify-center'>
-                    <button className='bg-gray-900 text-white p-2 w-full my-2'>Login</button>
+                    <button type="submit" className='bg-gray-900 text-white p-2 w-full my-2' disabled={loading}> {loading ? 'Logging in...' : 'Login'}</button>
                 </div>
            </form>
         </div>
@@ -79,4 +113,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Login;

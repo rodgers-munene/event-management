@@ -1,4 +1,6 @@
   const express = require('express');
+  const bcrypt = require('bcryptjs'); // To hash passwords
+  const jwt = require('jsonwebtoken'); // For generating JWT tokens
   const bodyParser = require('body-parser');
   const cors = require('cors');
   const db = require('./db'); // Import the database connection
@@ -32,6 +34,39 @@
       res.status(500).json({ error: 'Failed to register user.', details: error.message });
     }
   });
+
+  // User login
+app.post('/api/users/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE user_email = ?', [email]);
+
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    const user = rows[0];
+    
+    // Compare password without hashing
+    if (password !== user.password) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    // Create JWT token
+    const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
+      expiresIn: '1h', // Set token expiration time
+    });
+
+    res.status(200).json({
+      message: 'Login successful',
+      token,
+      user: { id: user.user_id, name: user.user_name, email: user.user_email },
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to log in', details: error.message });
+  }
+});
   
   // Fetch all events
   app.get('/api/events', async (req, res) => {
