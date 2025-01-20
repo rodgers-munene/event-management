@@ -35,20 +35,22 @@
     }
   });
 
-  // User login
+  // User Login
 app.post('/api/users/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // Query the database to find the user by email
     const [rows] = await db.query('SELECT * FROM users WHERE user_email = ?', [email]);
 
+    // Check if the user exists
     if (rows.length === 0) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     const user = rows[0];
-    
-    // Compare password without hashing
+
+    // Compare the plain-text password directly
     if (password !== user.password) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -58,6 +60,7 @@ app.post('/api/users/login', async (req, res) => {
       expiresIn: '1h', // Set token expiration time
     });
 
+    // Respond with the token and user information
     res.status(200).json({
       message: 'Login successful',
       token,
@@ -66,8 +69,9 @@ app.post('/api/users/login', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to log in', details: error.message });
   }
-});
-  
+}); 
+
+
   // Fetch all events
   app.get('/api/events', async (req, res) => {
     try {

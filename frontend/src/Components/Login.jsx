@@ -5,7 +5,7 @@ import BASE_URL from '../../api';
 
 
 
-const Login = () => {
+    const Login = () => {
     const { toggleAuthForm } = useAuth();
     const [password, setPassword] = useState('')
     const [isAlert, setIsAlert] = useState('')
@@ -112,5 +112,6 @@ const Login = () => {
     </div>
   )
 }
+
 
 export default Login;
