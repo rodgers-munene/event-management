@@ -1,9 +1,9 @@
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = import.meta.env.VITE_BACKEND_URL; 
 
 
 export async function fetchAllEvents() {
     try {
-      const response = await fetch('http://localhost:5000/api/events');
+      const response = await fetch(`${BASE_URL}/api/events`);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch events.');
@@ -18,7 +18,7 @@ export async function fetchAllEvents() {
   // Fetch a single event by ID
 export async function fetchEventById(eventId) {
     try {
-      const response = await fetch(`http://localhost:5000/api/events/${eventId}`);
+      const response = await fetch(`${BASE_URL}/api/events/${eventId}`);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch event.');
