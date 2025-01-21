@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Gift } from 'lucide-react';
+import BASE_URL from '../../api';
 
 const CreateEvent = () => {
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ const CreateEvent = () => {
     console.log(requestBody);
 
     try {
-      const response = await fetch('http://localhost:5000/api/events', {
+      const response = await fetch(`${BASE_URL}/api/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',  // Set Content-Type for JSON
