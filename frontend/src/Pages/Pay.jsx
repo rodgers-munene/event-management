@@ -8,6 +8,16 @@ const Pay = () => {
       const [event, setEvent] = useState(null);
       const [loading, setLoading] = useState(true);
 
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+      
+        return `${day}/${month}/${year}`;
+      }
+     
+
       useEffect(() => {
         async function loadEvent() {
           try {
@@ -55,9 +65,12 @@ const Pay = () => {
                   <h2 className="text-xl font-bold mb-4">Event Summary</h2>
                   <h3 className="text-lg font-semibold">{event?.event_title}</h3>
                   <div className="space-y-2 mt-2 text-gray-700 dark:text-gray-100">
-                    <p>{event?.event_start_date}</p>
-                    <p>{event?.event_end_date}</p>
-                    <p>{event?.event_location}</p>
+                    <p>Description: <br />{event?.event_description}</p>
+                    <div className='w-full flex items-center justify-between'>
+                      <p>Start Date: {formatDate(event?.event_start_date)}</p>
+                      <p>End date {formatDate(event?.event_end_date)}</p>
+                    </div>
+                    <p>Location: {event?.event_location}</p>
             
                   </div>
                 </div>

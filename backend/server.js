@@ -12,7 +12,7 @@
   
   // Middleware
   app.use(cors(
-    { origin: '*', // Replace with your frontend URL 
+    { origin: 'http://localhost:5173', // Replace with your frontend URL 
     methods: ['GET', 'POST'], 
     allowedHeaders: ['Content-Type', 'Authorization'] }
   ));
@@ -71,7 +71,7 @@
         message: 'Login successful',
         token,
         user: {
-          id: user.user_id,
+          id: user.id,
           name: user.user_name,
           email: user.user_email,
         },

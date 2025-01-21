@@ -11,6 +11,25 @@ const EventDetails = () => {
   const {id} = useParams();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const[signedIn, setSignedIn] = useState(false);
+  
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('user'));
+      if (storedData) {
+        setSignedIn(true);
+      }
+  }, []);
+
+  // format the date to make it readable
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+  
+    return `${day}/${month}/${year}`;
+  }
  
 
   useEffect(() => {
@@ -36,6 +55,8 @@ const EventDetails = () => {
   //  if(!eventDetail) {
   //   return <Error message="Event not found" />;
   // }
+
+  console.log(event?.image_url);
     
   
   return (
@@ -51,25 +72,27 @@ const EventDetails = () => {
               <h2 className="text-2xl font-bold mb-6">Event Details</h2>
               <div className="space-y-6">
                 <img 
-                  src={imageUrl}
-                  alt="Rock concert"
+                  src={event?.image_url}
+                  alt={event?.event_title}
                   className="w-full h-48 object-cover rounded-lg"
                 />
                 <div>
                   <h2 className="text-xl font-bold">{event?.event_title}</h2>
                   <div className="text-gray-700 dark:text-gray-300 mt-2">
-                    <p>{event?.event_start_date}</p>
-                    <p>{event?.event_end_date}</p>
-                    <p>{event?.event_location}</p>
+                    <div className='w-full flex items-center justify-between'>
+                    <p>Start Date: {formatDate(event?.event_start_date)}</p>
+                    <p>End Date: {formatDate(event?.event_end_date)}</p>
+                    </div>
+                    <p>Location: {event?.event_location}</p>
                   </div>
                 </div>
                 <p className="text-gray-700 dark:text-gray-300">
                   {event?.event_description}
                 </p>
                 <div className='w-full flex justify-between items-center'>
-                  <button className="bg-black text-white px-4 py-2 rounded-md ">
+                  {/* <button className="bg-black text-white px-4 py-2 rounded-md ">
                     Update Event
-                  </button>
+                  </button> */}
                   <Link 
                   to={`/pay/${id}/${(event?.event_title || 'untitled').replace(/\s+/g, '-').toLowerCase()}`}
                   className='bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800'>
@@ -92,7 +115,7 @@ const EventDetails = () => {
               </button>
 
               {/* Delete Confirmation Dialog */}
-              {showDeleteConfirm && (
+              {(signedIn && showDeleteConfirm) && (
                 <div className="mt-4 p-4 bg-gray-800 dark:bg-gray-200 rounded-lg">
                   <p className="text-white dark:text-black mb-4">
                     Are you sure you want to delete this event? This action cannot be undone.

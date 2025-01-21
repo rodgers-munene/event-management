@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import img2 from '../assets/images/2.jpg'
 import img9 from '../assets/images/9.jpg'
 import img4 from '../assets/images/4.jpg'
@@ -9,7 +9,8 @@ import { Gift, Music, Users, Cake, Facebook, Twitter } from 'lucide-react';
 
 
 const HomePage = () => {
-
+  const[loggedIn, setLoggedIn] = useState(false);
+  const[user, setUser] = useState('');
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -18,6 +19,17 @@ const HomePage = () => {
   const handleExplore = ()  => {
     navigate('/event-listings');
   }
+  const handleUpdates = () => {
+    // receive update logic should be placed here
+  }
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('user'));
+      if (storedData) {
+        setUser(storedData.user.name);
+        setLoggedIn(true);
+      }
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col mr-0 w-screen mx-auto">
@@ -122,12 +134,21 @@ const HomePage = () => {
                 placeholder="Enter your email"
                 className="w-full p-3 border border-gray-300 rounded-md"
               />
-              <button 
+              {!loggedIn && (
+                <button 
                 onClick={handleClick}
                 className=" text-bold text-2xl w-full bg-black text-white py-3 rounded-md" to={'/Auth'}>
                 Sign Up
 
               </button>
+              )}
+              {loggedIn && (
+                <button 
+                onClick={handleUpdates}
+                className=" text-bold sm:text-2xl w-full bg-black text-white py-3 rounded-md" to={'/Auth'}>
+                Recieve Updates
+                </button>
+              )}
 
             </div>
           </div>

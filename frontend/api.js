@@ -1,4 +1,4 @@
-const BASE_URL = 'http://127.0.0.1:5000/api'; // Replace with your backend's URL in production
+const BASE_URL = 'http://localhost:5000/api';
 
 
 export async function fetchAllEvents() {

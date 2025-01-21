@@ -1,5 +1,5 @@
 import { Import } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import img1 from '../assets/images/1.jpg';
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
@@ -10,7 +10,17 @@ import { useMenu } from '../context/MenuContext';
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const{isOpen, toggleMenu} = useMenu()
+  const [user, setUser] = useState(null);
 
+
+ useEffect(() => {
+  const storedData = JSON.parse(localStorage.getItem('user'));
+    if (storedData) {
+      setUser(storedData.user.name);
+      setIsLoggedIn(true);
+    }
+}, []);
+  
   
 
 const navigate = useNavigate()
@@ -99,7 +109,7 @@ const excludedPaths = ['/event-listings'];
                   ) : (
                     <p className=' text-black dark:text-white flex items-center p-2 rounded-sm w-full rounded-b-lg'>
                       <span className='mr-2 '><FaUser /></span> 
-                      Rodgers
+                      {user}
                     </p>
             )}
       </div>
@@ -118,7 +128,7 @@ const excludedPaths = ['/event-listings'];
             ) : (
               <p className=' text-black dark:text-white flex items-center p-2 rounded-sm'>
                 <span className='mr-2 '><FaUser /></span> 
-                Rodgers
+                {user}
               </p>
       )}
       </div>
