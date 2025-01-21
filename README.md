@@ -59,10 +59,10 @@ A modern, responsive Event Management System built with **React** and **Vite**. 
 - **Fast Performance**: Powered by Vite for instant HMR (Hot Module Replacement).
 - **State Management**: Leverages React's context API or other libraries like Redux (if used).
 - **Form Validation**: User-friendly forms with validation for event creation and editing.
-- **Dark/Light mode toggle**
-- **User Authentication**
-- **Search events Functionality**
-- **Event image upload**
+- **Dark/Light mode toggle**: Enables users to switch from light mode to dark mode
+- **User Authentication**: Authenticates event Organizers to allow them to delete or update events
+- **Search events Functionality**: Enables users to search for particular events they want to attend
+- **Event image upload**: Enables image upload on the create events page
 - **Error states with proper user feedback**
 
  
@@ -88,7 +88,8 @@ A modern, responsive Event Management System built with **React** and **Vite**. 
 
 ## Event Listings Page
 
-![Screenshot (263)](https://github.com/user-attachments/assets/13f8516f-2e0e-4a48-a212-ee98a0be76c7)
+![WhatsApp Image 2025-01-21 at 08 56 51_5cbf75b0](https://github.com/user-attachments/assets/70dd18a5-608e-40d6-ad3a-6b9c0c9e9693)
+
 
 ## Payments Page (in dark mode)
 
@@ -166,6 +167,11 @@ event-management-system-frontend/
 # Event Management System - Backend
 
 This is the backend for the Event Management System, responsible for handling API requests, managing databases, and supporting the frontend.
+
+## Database schema
+
+![WhatsApp Image 2025-01-21 at 09 03 11_cba5180d](https://github.com/user-attachments/assets/41749646-52b9-4e1f-a40a-35874476f3ec)
+
 
 ## Project Structure
 
@@ -278,6 +284,7 @@ node test-db.js
 - **Calendar View**: Introduce a calendar view for events.
 - **Notifications**: Add reminders and notifications for upcoming events.
 - **Advanced Filtering**: Enhance filtering options for a better user experience.
+- **M-Pesa API Integration** : Enable users make payments for events 
 
 ## Contributing
 Contributions are welcome! To contribute:
