@@ -39,7 +39,7 @@ CREATE TABLE events (
 -- Populate the events table
 INSERT INTO events (user_id, event_title, event_description, event_start_date, event_end_date, event_location, event_price, image_url) 
 VALUES 
-(1, 'Tech Conference 2025', 'A conference for tech enthusiasts.', '2025-03-15 09:00:00', '2025-03-15 17:00:00', 'New York City', 50.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIsAxKjvKu7Fgo8gl_M3A3lS8AV2TQc_Ecuw&s''),
+(1, 'Tech Conference 2025', 'A conference for tech enthusiasts.', '2025-03-15 09:00:00', '2025-03-15 17:00:00', 'New York City', 50.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIsAxKjvKu7Fgo8gl_M3A3lS8AV2TQc_Ecuw&s'),
 (2, 'Music Festival', 'A fun music festival for all ages.', '2025-04-20 12:00:00', '2025-04-20 22:00:00', 'Los Angeles', 75.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSracS428Jk0ZQFibCGuIVcaKUj9BuIh1Fv3Q&s'),
 (3, 'Art Exhibition', 'A showcase of local art talent.', '2025-05-05 10:00:00', '2025-05-05 18:00:00', 'Chicago', 25.00, 'https://media.istockphoto.com/id/1218961153/photo/art-museum.jpg?s=612x612&w=0&k=20&c=9fK54fu1mjzFjDOSqg_jfrMy4Hkp8vsmImB7rLrbhJs='),
 (4, 'Startup Pitch Night', 'Pitch night for entrepreneurs and investors.', '2025-06-10 18:00:00', '2025-06-10 21:00:00', 'San Francisco', 100.00, 'https://media.licdn.com/dms/image/v2/C5612AQFkpIXMgHfeEA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1540265171294?e=2147483647&v=beta&t=U72fngSz6iWHKsGd8C6z9joKg4dCgcvxvT9aOZnxTV0'),
@@ -53,7 +53,7 @@ CREATE TABLE payments (
     participant_number VARCHAR(20) NOT NULL, -- Contact number of the participant
     amount DECIMAL(10, 2) NOT NULL,    -- Payment amount
     payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for payment
-    payment_method VARCHAR(20) ENUM('Credit Card', 'PayPal', 'M-Pesa', 'Bank Transfer') NOT NULL, -- Payment method
+    payment_method ENUM('Credit Card', 'PayPal', 'M-Pesa', 'Bank Transfer') NOT NULL, -- Payment method
     transaction_id VARCHAR(100) UNIQUE NOT NULL, -- Unique transaction ID
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE -- Cascade delete if event is deleted
 );
