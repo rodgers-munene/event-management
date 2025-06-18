@@ -2,54 +2,6 @@
 
 A modern, responsive Event Management System built with **React** and **Vite**. This frontend application provides an intuitive user interface to manage events, including creating, viewing, updating, and deleting events. It is designed to integrate seamlessly with a backend API, which is being developed by our team.
 
-
-## 📋 Group Members Peer Group 16
-
-- **Monicah Wamuhu** (Group Leader)  
-- Isaac Limlim  
-- Solomon Ngandu  
-- Ryan Giggs  
-- Rodgers Munene  
-- Omar Mwakunyetta  
-- Elphas Simiyu  
-- Ali Aliow  
-- Benson Muthangya  
-- Fabius Simiyu  
-- Farbean Makini  
-- Phenny Mwaisaka  
-- Micheal James  
-- Joseph Roberts  
-- Tabitha Wanjiku  
-  
-
-## Table of Contents
-- [Event Management System - Frontend](#event-management-system---frontend)
-  - [Group Members Peer Group 16](#-group-members-peer-group-16)
-  - [Features](#features)
-  - [System Screenshots](#these-are-the-front-end-system-screenshots)
-    - [Login & Registration Page](#login--registration-page)
-    - [Landing Page](#landing-page)
-    - [Create Events Page](#create-events-page)
-    - [Event Listings Page](#event-listings-page)
-    - [Payments Page](#payments-page-in-dark-mode)
-  - [Tech Stack](#tech-stack)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Running the App](#running-the-app)
-  - [Folder Structure](#folder-structure)
-- [Event Management System - Backend](#event-management-system---backend)
-  - [Project Structure](#project-structure)
-  - [Prerequisites](#prerequisites-1)
-  - [Installation](#installation-1)
-  - [Running the Server](#running-the-server)
-  - [Testing the Backend](#testing-the-backend)
-  - [API Endpoints](#api-endpoints)
-  - [Common Issues](#common-issues)
-- [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
-- [License](#license)
-
   
 ## Features
 - **Event Management**: Add, view, edit, and delete events (integrated with the backend).
@@ -104,13 +56,6 @@ A modern, responsive Event Management System built with **React** and **Vite**. 
 
 
 ## Tech Stack
-- **Frontend Framework**: [React](https://reactjs.org/)
-- **Build Tool**: [Vite](https://vitejs.dev/)
-- **Styling**: Plain **CSS** and [Tailwind CSS](https://tailwindcss.com/)
-- **Routing**: [React Router](https://reactrouter.com/)
-- **State Management**: Context API or Redux Toolkit (if applicable)
-- **Icons**: [Lucide Icons](https://lucide.dev/)
-- **API Integration**: Axios or Fetch API (to connect with the backend)
   
 
 ## Getting Started
