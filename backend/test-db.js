@@ -1,4 +1,4 @@
-const db = require('./db'); // Import the database connection
+const db = require('./config/db'); // Import the database connection
 
 async function testConnection() {
   try {

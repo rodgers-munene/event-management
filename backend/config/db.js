@@ -9,7 +9,7 @@ const createDatabasePool = () => {
     database: process.env.DATABASE,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0,
+    queueLimit: 0, 
   });
   return pool.promise(); // Return a promisified pool
 };

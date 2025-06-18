@@ -1,4 +1,4 @@
-CREATE DATABASE event_management;
+-- CREATE DATABASE event_management;
 
 USE event_management;
 
@@ -61,8 +61,8 @@ CREATE TABLE payments (
 -- Populate the payments table
 INSERT INTO payments (event_id, participant_name, participant_number, amount, payment_method, transaction_id) 
 VALUES 
-(6, 'Alice Johnson', '1234567890', 50.00, 'Credit Card', 'TXN12345'),
-(7, 'Robert Lee', '9876543210', 50.00, 'PayPal', 'TXN12346'),
-(8, 'Sophia Martinez', '1122334455', 75.00, 'M-Pesa', 'TXN12347'),
-(9, 'James Anderson', '5566778899', 25.00, 'Bank Transfer', 'TXN12348'),
-(10, 'Charlotte Wilson', '2233445566', 100.00, 'Credit Card', 'TXN12349');
+(1, 'Alice Johnson', '1234567890', 50.00, 'Credit Card', 'TXN12345'),
+(2, 'Robert Lee', '9876543210', 50.00, 'PayPal', 'TXN12346'),
+(3, 'Sophia Martinez', '1122334455', 75.00, 'M-Pesa', 'TXN12347'),
+(4, 'James Anderson', '5566778899', 25.00, 'Bank Transfer', 'TXN12348'),
+(5, 'Charlotte Wilson', '2233445566', 100.00, 'Credit Card', 'TXN12349');

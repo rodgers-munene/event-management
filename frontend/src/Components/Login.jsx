@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import BASE_URL from '../../api';
-import Popup from './popup';
+import Popup from './Popup';
 
 const Login = () => {
   const { toggleAuthForm } = useAuth();
@@ -72,8 +72,8 @@ const Login = () => {
 
   return (
     <div className="w-auto max-h-[23rem] bg-gray-100 dark:bg-gray-700 dark:text-white shadow-xl rounded-lg flex flex-col justify-between p-4">
-      <div className="w-full flex justify-center">
-        <p className="text-3xl font-bold flex items-center">
+      <div className="flex justify-center w-full">
+        <p className="flex items-center text-3xl font-bold">
           <FaCalendarAlt /> EventPro
         </p>
       </div>
@@ -87,7 +87,7 @@ const Login = () => {
               placeholder="Email"
               value={user_email}
               onChange={(e) => setUserEmail(e.target.value)}
-              className="border border-gray-300 p-2 my-2 text-black"
+              className="p-2 my-2 text-black border border-gray-300"
               required
             />
           </div>
@@ -97,7 +97,7 @@ const Login = () => {
               type="password"
               id="password"
               placeholder="Password"
-              className="border p-2 my-2 text-black"
+              className="p-2 my-2 text-black border"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -106,7 +106,7 @@ const Login = () => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-gray-900 text-white p-2 w-full my-2"
+              className="w-full p-2 my-2 text-white bg-gray-900"
               disabled={loading}
             >
               {loading ? 'Logging in...' : 'Login'}
@@ -121,7 +121,7 @@ const Login = () => {
         <p>
           Don't have an account?{' '}
           <span
-            className="text-gray-600 dark:text-gray-200 cursor-pointer"
+            className="text-gray-600 cursor-pointer dark:text-gray-200"
             onClick={toggleAuthForm}
           >
             Sign Up
