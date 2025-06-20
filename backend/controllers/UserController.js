@@ -36,7 +36,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500);
-    throw new Error("Registration failed");
+    throw new Error("Registration failed", error);
   }
 };
 
@@ -90,7 +90,7 @@ const loginUser = async (req, res) => {
   } catch (error) {
     // console.error(error);
     res.status(500);
-    throw new Error("Login failed");
+    throw new Error("Login failed", error);
   }
 };
 
