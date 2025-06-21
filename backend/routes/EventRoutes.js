@@ -20,7 +20,7 @@ router.get('/:id', getEvent)
 // create a new event
 // POST /api/events
 // private route
-router.post('/:id', validateToken, postEvent)
+router.post('/', validateToken, postEvent)
 
 // update event
 // PUT /api/events/id

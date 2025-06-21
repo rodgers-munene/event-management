@@ -48,12 +48,7 @@ const allRegisteredUsers = async (req, res, next) => {
   const { status } = req.query;
 
   try {
-     // authorize user
-    if(String(req.user.id) !== String(userId)){
-      res.status(401)
-      throw new Error("Unauthorized User")
-    }
-
+    
     // first check if event exist
     const [eventAvailable] = await db.query(
       "SELECT * FROM events WHERE id = ?",
@@ -63,6 +58,13 @@ const allRegisteredUsers = async (req, res, next) => {
       res.status(404);
       throw new Error("Event not Found");
     }
+
+     // authorize user
+    if(String(req.user.id) !== String(eventAvailable[0].user_id)){
+      res.status(401)
+      throw new Error("Unauthorized User")
+    }
+
 
     // query the registration data db to check all users registered for the specific event
     // use join to combine the registration table and users table

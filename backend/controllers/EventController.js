@@ -53,7 +53,6 @@ const getMyEvents = async (req, res, next) => {
 }
 
 const postEvent = async (req, res, next) => {
-  const id = req.params.id
   const {
     user_id,
     event_title,
@@ -67,7 +66,7 @@ const postEvent = async (req, res, next) => {
 
   try {
  // authorize user
-    if(String(req.user.id) !== String(id)){
+    if(String(req.user.id) !== String(user_id)){
       res.status(401)
       throw new Error("Unauthorized User")
     }
@@ -96,8 +95,9 @@ const postEvent = async (req, res, next) => {
 
 const updateEvent = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const update = req.body;
+    const eventId = req.params.id;
+    const update = { ...req.body };
+    delete update.user_id
 
     const updatableFields = [
       "event_title",
@@ -112,11 +112,6 @@ const updateEvent = async (req, res, next) => {
     const fields = [];
     const values = [];
 
-     // authorize user
-    if(String(req.user.id) !== String(id)){
-      res.status(401)
-      throw new Error("Unauthorized User")
-    }
 
     for (const key in update) {
       if (updatableFields.includes(key)) {
@@ -135,7 +130,7 @@ const updateEvent = async (req, res, next) => {
 
     const [eventAvailable] = await db.query(
       "SELECT * FROM events WHERE id = ?",
-      [id]
+      [eventId]
     );
 
     if (eventAvailable.length === 0) {
@@ -143,7 +138,13 @@ const updateEvent = async (req, res, next) => {
       throw new Error("Event not found");
     }
 
-    const query = `UPDATE events SET ${fields.join(", ")} WHERE id = ${id}`;
+     // authorize user
+    if(String(req.user.id) !== String(eventAvailable[0].user_id)){
+      res.status(401)
+      throw new Error("Unauthorized User")
+    }
+
+    const query = `UPDATE events SET ${fields.join(", ")} WHERE id = ${eventId}`;
 
     const [result] = await db.query(query, values);
 
@@ -161,18 +162,16 @@ const updateEvent = async (req, res, next) => {
 const deleteEvent = async (req, res, next) => {
   try {
     const id = req.params.id;
-
-     // authorize user
-    if(String(req.user.id) !== String(id)){
-      res.status(401)
-      throw new Error("Unauthorized User")
-    }
     
     // availability of the event
     const [event] = await db.query(`SELECT * FROM events WHERE id = ${id}`);
     if (event.length === 0) {
       res.status(404);
       throw new Error("Event not Found!");
+    }
+    if(String(req.user.id) !== String(event[0].user_id)){
+      res.status(401)
+      throw new Error("Unauthorized User")
     }
 
     const [result] = await db.query(`DELETE FROM events WHERE id = ${id}`)
