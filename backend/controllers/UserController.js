@@ -3,15 +3,15 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 //register user logic
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
   const { user_email, user_name, password } = req.body;
 
-  if (!user_email || !user_name || !user_name || !password) {
-    res.status(400);
-    throw new Error("All fields are mandatory!!");
-  }
-
   try {
+    if (!user_email || !user_name || !user_name || !password) {
+      res.status(400);
+      throw new Error("All fields are mandatory!!");
+    }
+
     const [existingUser] = await db.query(
       "SELECT * from users where user_email = ?",
       [user_email]
@@ -35,22 +35,21 @@ const registerUser = async (req, res) => {
       userId: results.insertId,
     });
   } catch (error) {
-    res.status(500);
-    throw new Error("Registration failed", error);
+    next(error)
   }
 };
 
 // login user logic
 
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => {
   const { user_email, password } = req.body;
 
-  if (!user_email || !password) {
-    res.status(400);
-    throw new Error("All fields are mandatory");
-  }
-
   try {
+    if (!user_email || !password) {
+      res.status(400);
+      throw new Error("All fields are mandatory");
+    }
+    
     // check if user exist
     const [existingUser] = await db.query(
       "SELECT * FROM users WHERE user_email = ?",
@@ -88,9 +87,7 @@ const loginUser = async (req, res) => {
 
     res.status(200).json({ token });
   } catch (error) {
-    // console.error(error);
-    res.status(500);
-    throw new Error("Login failed", error);
+    next(error)
   }
 };
 

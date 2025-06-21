@@ -27,9 +27,7 @@ const postPayment = async (req, res, next) => {
       .status(201)
       .json({ message: "Payment successful!", paymentId: result.insertId });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to process payment.", details: error.message });
+    next(error)
   }
 }
 

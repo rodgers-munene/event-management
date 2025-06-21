@@ -25,8 +25,7 @@ const validateToken = async (req, res, next) => {
             throw new Error("Missing Token")
         }
     } catch (error) {
-        res.status(500);
-        throw new Error("Token validation failed!!")
+        next(error)
         
     } 
 

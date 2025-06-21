@@ -33,6 +33,11 @@ const getEvent = async (req, res, next) => {
 const getMyEvents = async (req, res, next) => {
   const id = req.params.user_id
   try {
+    // authorize user
+    if(String(req.user.id) !== String(id)){
+      res.status(401)
+      throw new Error("Unauthorized User")
+    }
     const [results] = await db.query('SELECT * FROM events where user_id = ?', [id])
     if(results.length === 0){
       return res.status(200).json({
@@ -48,6 +53,7 @@ const getMyEvents = async (req, res, next) => {
 }
 
 const postEvent = async (req, res, next) => {
+  const id = req.params.id
   const {
     user_id,
     event_title,
@@ -60,6 +66,12 @@ const postEvent = async (req, res, next) => {
   } = req.body;
 
   try {
+ // authorize user
+    if(String(req.user.id) !== String(id)){
+      res.status(401)
+      throw new Error("Unauthorized User")
+    }
+
     const [result] = await db.query(
       "INSERT INTO events (user_id, event_title, event_description, event_start_date, event_end_date, event_location, event_price, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [
@@ -99,6 +111,12 @@ const updateEvent = async (req, res, next) => {
 
     const fields = [];
     const values = [];
+
+     // authorize user
+    if(String(req.user.id) !== String(id)){
+      res.status(401)
+      throw new Error("Unauthorized User")
+    }
 
     for (const key in update) {
       if (updatableFields.includes(key)) {
@@ -143,6 +161,13 @@ const updateEvent = async (req, res, next) => {
 const deleteEvent = async (req, res, next) => {
   try {
     const id = req.params.id;
+
+     // authorize user
+    if(String(req.user.id) !== String(id)){
+      res.status(401)
+      throw new Error("Unauthorized User")
+    }
+    
     // availability of the event
     const [event] = await db.query(`SELECT * FROM events WHERE id = ${id}`);
     if (event.length === 0) {

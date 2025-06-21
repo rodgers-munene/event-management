@@ -9,10 +9,10 @@ router.get('/:eventId/registrations', allRegisteredUsers);
 router.get('/users/:userId/registrations', getUserRegisteredEvents);
 
 // POST a new registration (user registers for an event)
-router.post('/registrations', registerForEvent);
+router.post('/registrations/:userId/:eventId', registerForEvent);
 
-// DELETE (cancel) a registration by ID
-router.delete('/registrations/:userId', cancelRegistration);
+// UPDATE (cancel) a registration by ID
+router.put('/registrations/:userId/:eventId', cancelRegistration);
 
 
 module.exports = router
