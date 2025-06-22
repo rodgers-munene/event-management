@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import img2 from '../assets/images/2.jpg'
 import img9 from '../assets/images/9.jpg'
-import img4 from '../assets/images/4.jpg'
+import Hero from '../assets/images/hero.png'
 import { useNavigate } from 'react-router-dom'
-import { Gift, Music, Users, Cake, Facebook, Twitter } from 'lucide-react';
+import { Music, Users, Cake, Facebook, Twitter } from 'lucide-react';
 
 
 
@@ -38,7 +38,7 @@ const HomePage = () => {
       {/* Hero Section */}
       <section className="relative h-[300px] sm:h-[500px] bg-black">
         <img
-          src={img4}
+          src={Hero}
           alt="Concert lights"
           className="object-cover w-full h-full opacity-80"
         />

@@ -14,7 +14,7 @@ const App = () => {
         
 
   return (
- <div className='w-screen bg-gray-300 dark:bg-gray-900 dark:text-white transition-colors duration-300'>
+ <div className='w-screen min-h-screen bg-gray-300 dark:bg-gray-900 dark:text-white transition-colors duration-300'>
   <Router>
     <Routes>
         <Route index ='/' element={<RouteLayout><HomePage/></RouteLayout>} />

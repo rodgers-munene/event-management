@@ -1,141 +1,132 @@
-import { useEffect, useState } from 'react'
-import img1 from '../assets/images/1.jpg';
-import { NavLink, useNavigate } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
+import React, { useState } from 'react';
+import Logo from '../assets/images/Logo.png';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
 import { useMenu } from '../context/MenuContext';
-
+import { useAuth } from '../context/AuthContext';
+import { FaChevronDown } from 'react-icons/fa';
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const{isOpen, toggleMenu} = useMenu()
-  const [user, setUser] = useState(null);
+  const { user, token, logout } = useAuth();
+  const { isOpen, toggleMenu } = useMenu();
+  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
 
+  const handleClick = () => {
+    navigate('/login');
+  };
 
- useEffect(() => {
-  const storedData = JSON.parse(localStorage.getItem('user'));
-    if (storedData) {
-      // setUser(storedData.user.name);
-      setIsLoggedIn(true);
-    }
-}, []);
-  
-  
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
+  };
 
-const navigate = useNavigate()
-const location = useLocation()
+  const handleLogout = () => {
+    logout();
+    setShowDropdown(false);
+    navigate('/');
+  };
 
-const handleClick = () => {
-  navigate('/authentication');
-};
-
-const excludedPaths = ['/event-listings'];
   return (
-    <div className='navbar rounded-lg w-screen sm:w-[98%] p-2'>
-        <img 
-          onClick={() => navigate('/')}
-          src={img1}alt="Logo"
-          className='w-20 h-20 sm:ml-4'/>
-        <ul className='hidden p-3 bg-gray-400 shadow-2xl dark:bg-gray-800 sm:flex rounded-2xl'>
-            <NavLink to={'/'}>  <li className='px-5'>Home</li></NavLink>
-            <NavLink to={'/create-event'}>  <li className='px-5'>Create Event</li></NavLink>
-            {/* <NavLink to={'/event-details'}>     <li>Event Details</li></NavLink> */}
-            <NavLink to={'/event-listings'}> <li className='px-5'>Event Listings</li></NavLink>
-            {/* <NavLink to={'/pay'}> <li>Pay</li></NavLink> */}
+    <div className='flex justify-between items-center rounded-lg w-screen sm:w-[98%] p-2 relative'>
+      <h1 className='text-4xl font-bold'>Event<span className='text-purple-800'>PRO</span></h1>
 
+      {/* Large screen navigation */}
+      <ul className='hidden p-3 bg-gray-400 shadow-2xl dark:bg-gray-800 sm:flex rounded-2xl'>
+        <NavLink to='/'><li className='px-5'>Home</li></NavLink>
+        <NavLink to='/create-event'><li className='px-5'>Create Event</li></NavLink>
+        <NavLink to='/event-listings'><li className='px-5'>Event Listings</li></NavLink>
+      </ul>
 
-        </ul>
-        <div className='flex items-center sm:hidden'>
-
-          {/* hamburger button */}
+      {/* Small screen hamburger */}
+      <div className='flex items-center sm:hidden'>
         <button
           onClick={toggleMenu}
           className="text-gray-800 sm:hidden focus:outline-none dark:text-gray-300"
         >
           <div className="relative flex flex-col items-center justify-between w-8 h-6">
-            {/* Top bar */}
-            <span
-              className={`block w-full h-[0.2rem] bg-current transform transition-transform duration-300 ${
-                isOpen ? "rotate-45 translate-y-4" : ""
-              }`}
-            ></span>
-            {/* Middle bar */}
-            <span
-              className={`block w-full h-[0.2rem] bg-current transition-opacity duration-300 ${
-                isOpen ? "opacity-0" : "opacity-100"
-              }`}
-            ></span>
-            {/* Bottom bar */}
-            <span
-              className={`block w-full h-[0.2rem] bg-current transform transition-transform duration-300 ${
-                isOpen ? "-rotate-45 -translate-y-1" : ""
-              }`}
-            ></span>
+            <span className={`block w-full h-[0.2rem] bg-current transform transition-transform duration-300 ${isOpen ? "rotate-45 translate-y-4" : ""}`} />
+            <span className={`block w-full h-[0.2rem] bg-current transition-opacity duration-300 ${isOpen ? "opacity-0" : "opacity-100"}`} />
+            <span className={`block w-full h-[0.2rem] bg-current transform transition-transform duration-300 ${isOpen ? "-rotate-45 -translate-y-1" : ""}`} />
           </div>
         </button>
-              {/* small screens navigation links */}
-        <ul 
-        className={`dark:bg-gray-800 bg-gray-400 flex flex-col justify-around items-start absolute top-16 right-1 w-44 h-44 transform transition-transform duration-300
-         ease-in-out z-[1000] rounded-lg ${isOpen ? "translate-y-5" : "-translate-y-[140%]"}`}>
-              <li 
-              onClick={toggleMenu}
-              className='w-full p-2'>
-                <NavLink to={'/'} className=''>Home</NavLink>
-              </li>
-             <li 
-              onClick={toggleMenu}
-             className='w-full p-2'>
-               <NavLink to={'/create-event'}>Create Event</NavLink>
-            </li>
-            
-             <li
-             onClick={toggleMenu} 
-             className='w-full p-2'>
-              <NavLink to={'/event-listings'}>Event Listings</NavLink>
-            </li>
-           
-          
-            <div className='flex items-center w-full rounded-b-lg'>
-            {!isLoggedIn ? (
-                    <button 
-                      onClick={() => {
-                        handleClick();
-                        toggleMenu();
-                      }} 
-                       className='w-full text-white bg-gray-800 rounded-b-lg dark:bg-gray-300 dark:text-black'>
-                      Login
-                    </button>
-                  ) : (
-                    <p className='flex items-center w-full p-2 text-black rounded-sm rounded-b-lg  dark:text-white'>
-                      <span className='mr-2 '><FaUser /></span> 
-                      {user}
-                    </p>
-            )}
-      </div>
 
-        </ul>
-         </div>
-        
-       {/* large screens login button */}
-      <div className='items-center hidden sm:flex'>
-      {!isLoggedIn ? (
-              <button 
-                onClick={handleClick}
-                className='text-white bg-gray-800 dark:bg-gray-300 dark:text-black rounded-xl'>
+        {/* Small screen nav links */}
+        <ul className={`dark:bg-gray-800 bg-gray-400 flex flex-col absolute top-16 right-1 w-44 h-44 z-[1000] rounded-lg transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-y-5" : "-translate-y-[140%]"}`}>
+          <li onClick={toggleMenu} className='w-full p-2'>
+            <NavLink to='/'>Home</NavLink>
+          </li>
+          <li onClick={toggleMenu} className='w-full p-2'>
+            <NavLink to='/create-event'>Create Event</NavLink>
+          </li>
+          <li onClick={toggleMenu} className='w-full p-2'>
+            <NavLink to='/event-listings'>Event Listings</NavLink>
+          </li>
+          <div className='flex items-center w-full rounded-b-lg'>
+            {token === null ? (
+              <button
+                onClick={() => {
+                  handleClick();
+                  toggleMenu();
+                }}
+                className='w-full text-white bg-gray-800 dark:bg-gray-300 dark:text-black rounded-b-lg'>
                 Login
               </button>
             ) : (
-              <p className='flex items-center p-2 text-black rounded-sm  dark:text-white'>
-                <span className='mr-2 '><FaUser /></span> 
-                {user}
+              <p className='flex items-center w-full p-2 text-black rounded-b-lg dark:text-white'>
+                <span className='mr-2'><FaUser /></span>
+                {user.userName}
+                <FaChevronDown />
               </p>
-      )}
+            )}
+          </div>
+        </ul>
       </div>
 
-      
-           
-    </div>
-  )
-}
+      {/* Large screen right side: Login or User Dropdown */}
+      <div className='relative hidden sm:flex items-center'>
+        {token === null ? (
+          <button
+            onClick={handleClick}
+            className='text-white bg-gray-800 dark:bg-gray-300 dark:text-black rounded-xl px-4 py-1'>
+            Login
+          </button>
+        ) : (
+          <div className='relative'>
+            <button
+              onClick={toggleDropdown}
+              className='flex items-center text-black dark:text-white px-4 py-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700'>
+              <FaUser className='mr-2' />
+              {user.userName}
+              <FaChevronDown  className='ml-2'/>
+            </button>
 
-export default Navbar
+            {showDropdown && (
+              <div className='absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border rounded-lg shadow-lg z-50'>
+                <button
+                  onClick={() => {
+                    navigate('/profile');
+                    setShowDropdown(false);
+                  }}
+                  className='w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700'>
+                  View Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className='w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700'>
+                  Logout
+                </button>
+                <button
+                  onClick={() => setShowDropdown(false)}
+                  className='w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700'>
+                  Close ×
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;

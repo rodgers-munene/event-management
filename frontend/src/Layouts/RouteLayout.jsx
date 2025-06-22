@@ -5,7 +5,7 @@ import ThemeToggle from '../Components/ThemeToggle';
 
 const RouteLayout = ( {children} ) => {
   return (
-    <div className=''>
+    <div className='w-full flex flex-col items-center'>
       <Navbar />
       <ThemeToggle />
 
