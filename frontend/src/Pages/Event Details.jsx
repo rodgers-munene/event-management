@@ -1,42 +1,31 @@
-import React from 'react'
-import  { useState, useEffect } from 'react';
-import { Gift } from 'lucide-react';
-import { useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Gift, Calendar, MapPin, Clock, User, ArrowLeft } from 'lucide-react';
 import { fetchEventById } from '../../api';
 
-
 const EventDetails = () => {
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const {id} = useParams();
+  const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const[signedIn, setSignedIn] = useState(false);
-  
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('user'));
-      if (storedData) {
-        setSignedIn(true);
-      }
-  }, []);
-
-  // format the date to make it readable
+  // Format date to be more readable
   function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-  
-    return `${day}/${month}/${year}`;
+    if (!dateString) return '';
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   }
- 
+
+  // Format time
+  function formatTime(dateString) {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
 
   useEffect(() => {
     async function loadEvent() {
       try {
         const data = await fetchEventById(id);
-        
         setEvent(data);
       } catch (err) {
         setError(err.message);
@@ -48,127 +37,146 @@ const EventDetails = () => {
     loadEvent();
   }, [id]);
 
-  const imageUrl = event?.image_url || 'default-image-url.jpg'
-  
-  //const eventDetail = events.find((event) => event.id === parseInt(id));
+  if (error) return <div className="text-red-500 text-center py-10">{error}</div>;
+  if (!event) return <div className="text-center py-10">Event not found</div>;
 
-  //  if(!eventDetail) {
-  //   return <Error message="Event not found" />;
-  // }
-
-  console.log(event?.image_url);
-    
-  
   return (
-    <div className="min-h-screen flex flex-col w-screen">
-    
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Back Button */}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <Link 
+          to="/event-listings" 
+          className="flex items-center text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
+        >
+          <ArrowLeft className="mr-2" size={18} />
+          Back to Events
+        </Link>
+      </div>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 py-8 w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <main className="max-w-7xl mx-auto px-4 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Event Details Section */}
-          <div className="md:col-span-2 space-y-8">
-            <section className="bg-gray-200 dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-2xl font-bold mb-6">Event Details</h2>
-              <div className="space-y-6">
-                <img 
-                  src={event?.image_url}
-                  alt={event?.event_title}
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-                <div>
-                  <h2 className="text-xl font-bold">{event?.event_title}</h2>
-                  <div className="text-gray-700 dark:text-gray-300 mt-2">
-                    <div className='w-full flex items-center justify-between'>
-                    <p>Start Date: {formatDate(event?.event_start_date)}</p>
-                    <p>End Date: {formatDate(event?.event_end_date)}</p>
-                    </div>
-                    <p>Location: {event?.event_location}</p>
-                  </div>
-                </div>
-                <p className="text-gray-700 dark:text-gray-300">
-                  {event?.event_description}
-                </p>
-                <div className='w-full flex justify-between items-center'>
-                  {/* <button className="bg-black text-white px-4 py-2 rounded-md ">
-                    Update Event
-                  </button> */}
-                  <Link 
-                  to={`/pay/${id}/${(event?.event_title || 'untitled').replace(/\s+/g, '-').toLowerCase()}`}
-                  className='bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800'>
-                    Register
-                  </Link>
-                </div>
+          <div className="lg:col-span-2 space-y-6">
+            {/* Event Image */}
+            <div className="rounded-xl overflow-hidden shadow-lg">
+              <img 
+                src={event.image_url || 'https://via.placeholder.com/800x450?text=Event+Image'} 
+                alt={event.event_title} 
+                className="w-full h-64 md:h-96 object-cover"
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/800x450?text=Event+Image';
+                }}
+              />
+            </div>
+
+            {/* Event Info Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                  {event.event_title}
+                </h1>
+                {event.is_free && (
+                  <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium">
+                    Free Event
+                  </span>
+                )}
               </div>
-            </section>
+
+              <div className="flex flex-wrap gap-4 mb-6">
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <Calendar className="mr-2 text-purple-500" size={18} />
+                  <span>{formatDate(event.event_start_date)}</span>
+                </div>
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <Clock className="mr-2 text-purple-500" size={18} />
+                  <span>{formatTime(event.event_start_date)} - {formatTime(event.event_end_date)}</span>
+                </div>
+                {event.event_location && (
+                  <div className="flex items-center text-gray-700 dark:text-gray-300">
+                    <MapPin className="mr-2 text-purple-500" size={18} />
+                    <span>{event.event_location}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">About This Event</h3>
+                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
+                  {event.event_description}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <Link 
+                  to={`/pay/${id}/${(event.event_title || 'event').replace(/\s+/g, '-').toLowerCase()}`}
+                  className="flex-1 md:flex-none px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-center transition-colors shadow-md"
+                >
+                  Register Now
+                </Link>
+                <button className="flex-1 md:flex-none px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg font-medium transition-colors">
+                  Share Event
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* Manage Event Section */}
-          <div className="md:col-span-1 ">
-            <section className=" rounded-lg shadow p-6 bg-gray-200 dark:bg-gray-800">
-              <h2 className="text-xl font-bold mb-4">Manage Event</h2>
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700"
-              >
-                Delete Event
-              </button>
-
-              {/* Delete Confirmation Dialog */}
-              {(signedIn && showDeleteConfirm) && (
-                <div className="mt-4 p-4 bg-gray-800 dark:bg-gray-200 rounded-lg">
-                  <p className="text-white dark:text-black mb-4">
-                    Are you sure you want to delete this event? This action cannot be undone.
-                  </p>
-                  <div className="flex space-x-4">
-                    <button
-                      className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-                      onClick={() => {
-                        // Handle delete
-                        setShowDeleteConfirm(false);
-                      }}
-                    >
-                      Confirm Delete
-                    </button>
-                    <button
-                      className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md hover:bg-gray-300"
-                      onClick={() => setShowDeleteConfirm(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Organizer Info */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Organizer</h3>
+              <div className="flex items-center">
+                <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mr-4">
+                  <User className="text-purple-600 dark:text-purple-400" size={20} />
                 </div>
-              )}
-            </section>
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white">{event.organizer_name || 'Event Organizer'}</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Host</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Event Highlights */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Event Highlights</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <Gift className="text-purple-500 mr-3 mt-0.5 flex-shrink-0" size={18} />
+                  <span className="text-gray-700 dark:text-gray-300">Free goodies for early registrants</span>
+                </li>
+                <li className="flex items-start">
+                  <Gift className="text-purple-500 mr-3 mt-0.5 flex-shrink-0" size={18} />
+                  <span className="text-gray-700 dark:text-gray-300">Networking opportunities</span>
+                </li>
+                <li className="flex items-start">
+                  <Gift className="text-purple-500 mr-3 mt-0.5 flex-shrink-0" size={18} />
+                  <span className="text-gray-700 dark:text-gray-300">Interactive sessions</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Tags */}
+            {event.tags && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tags</h3>
+                <div className="flex flex-wrap gap-2">
+                  {event.tags.split(',').map((tag, index) => (
+                    <span 
+                      key={index} 
+                      className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full text-sm"
+                    >
+                      {tag.trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 dark:bg-gray-300 dark:text-black text-white border-t mt-8">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-          <p className="text-sm text-gray-400 dark:text-gray-900">
-            © 2023 EventPro. All rights reserved.
-          </p>
-          <div className="space-x-6">
-            <a href="#" className="text-sm text-gray-400 dark:text-gray-900 hover:text-gray-900">
-              Privacy Policy
-            </a>
-            <a href="#" className="text-sm text-gray-400 dark:text-gray-900 hover:text-gray-900">
-              Terms of Service
-            </a>
-            <a href="#" className="text-sm text-gray-400 dark:text-gray-900 hover:text-gray-900">
-              Contact Us
-            </a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
 
-
-
-
-
-export default EventDetails
+export default EventDetails;

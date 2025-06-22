@@ -35,7 +35,7 @@ const registerUser = async (req, res, next) => {
       userId: results.insertId,
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -49,7 +49,7 @@ const loginUser = async (req, res, next) => {
       res.status(400);
       throw new Error("All fields are mandatory");
     }
-    
+
     // check if user exist
     const [existingUser] = await db.query(
       "SELECT * FROM users WHERE user_email = ?",
@@ -70,24 +70,19 @@ const loginUser = async (req, res, next) => {
       res.status(400);
       throw new Error("User password invalid!");
     }
+    const userDetails = {
+      id: user.id,
+      userName: user.user_name,
+      userEmail: user.user_email,
+    };
 
-    const token = jwt.sign(
-      {
-        user: {
-          id: user.id,
-          userName: user.user_name,
-          userEmail: user.user_email,
-        },
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "5h",
-      }
-    );
+    const token = jwt.sign({ userDetails }, process.env.JWT_SECRET, {
+      expiresIn: "5h",
+    });
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, userDetails });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
