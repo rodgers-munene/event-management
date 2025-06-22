@@ -3,19 +3,15 @@ import Navbar from '../Components/Navbar'
 import { Outlet, useLocation } from 'react-router-dom'
 import ThemeToggle from '../Components/ThemeToggle';
 
-const RouteLayout = () => {
-
-  const location = useLocation();
-
-  const excludedPaths = ['/authentication'];
+const RouteLayout = ( {children} ) => {
   return (
-    <div>
-      {/* render the navbar only if the current paths is not excluded */}
-      {!excludedPaths.includes(location.pathname) && <Navbar />}
-      <div className='container'>
-        <Outlet />
-      </div>
+    <div className=''>
+      <Navbar />
       <ThemeToggle />
+
+      <main>
+        {children}
+      </main>
 
     </div>
   )

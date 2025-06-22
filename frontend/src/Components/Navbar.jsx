@@ -1,5 +1,4 @@
-import { Import } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import img1 from '../assets/images/1.jpg';
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
@@ -16,7 +15,7 @@ const Navbar = () => {
  useEffect(() => {
   const storedData = JSON.parse(localStorage.getItem('user'));
     if (storedData) {
-      setUser(storedData.user.name);
+      // setUser(storedData.user.name);
       setIsLoggedIn(true);
     }
 }, []);
@@ -37,7 +36,7 @@ const excludedPaths = ['/event-listings'];
           onClick={() => navigate('/')}
           src={img1}alt="Logo"
           className='w-20 h-20 sm:ml-4'/>
-        <ul className='dark:bg-gray-800 bg-gray-400 hidden sm:flex p-3 rounded-2xl shadow-2xl'>
+        <ul className='hidden p-3 bg-gray-400 shadow-2xl dark:bg-gray-800 sm:flex rounded-2xl'>
             <NavLink to={'/'}>  <li className='px-5'>Home</li></NavLink>
             <NavLink to={'/create-event'}>  <li className='px-5'>Create Event</li></NavLink>
             {/* <NavLink to={'/event-details'}>     <li>Event Details</li></NavLink> */}
@@ -46,14 +45,14 @@ const excludedPaths = ['/event-listings'];
 
 
         </ul>
-        <div className='flex sm:hidden items-center'>
+        <div className='flex items-center sm:hidden'>
 
           {/* hamburger button */}
         <button
           onClick={toggleMenu}
-          className="sm:hidden focus:outline-none text-gray-800 dark:text-gray-300"
+          className="text-gray-800 sm:hidden focus:outline-none dark:text-gray-300"
         >
-          <div className="relative w-8 h-6 flex flex-col justify-between items-center">
+          <div className="relative flex flex-col items-center justify-between w-8 h-6">
             {/* Top bar */}
             <span
               className={`block w-full h-[0.2rem] bg-current transform transition-transform duration-300 ${
@@ -103,11 +102,11 @@ const excludedPaths = ['/event-listings'];
                         handleClick();
                         toggleMenu();
                       }} 
-                       className='dark:bg-gray-300 bg-gray-800 text-white dark:text-black w-full rounded-b-lg'>
+                       className='w-full text-white bg-gray-800 rounded-b-lg dark:bg-gray-300 dark:text-black'>
                       Login
                     </button>
                   ) : (
-                    <p className=' text-black dark:text-white flex items-center p-2 rounded-sm w-full rounded-b-lg'>
+                    <p className='flex items-center w-full p-2 text-black rounded-sm rounded-b-lg  dark:text-white'>
                       <span className='mr-2 '><FaUser /></span> 
                       {user}
                     </p>
@@ -118,15 +117,15 @@ const excludedPaths = ['/event-listings'];
          </div>
         
        {/* large screens login button */}
-      <div className='hidden sm:flex items-center'>
+      <div className='items-center hidden sm:flex'>
       {!isLoggedIn ? (
               <button 
                 onClick={handleClick}
-                className='dark:bg-gray-300 bg-gray-800 text-white dark:text-black rounded-xl'>
+                className='text-white bg-gray-800 dark:bg-gray-300 dark:text-black rounded-xl'>
                 Login
               </button>
             ) : (
-              <p className=' text-black dark:text-white flex items-center p-2 rounded-sm'>
+              <p className='flex items-center p-2 text-black rounded-sm  dark:text-white'>
                 <span className='mr-2 '><FaUser /></span> 
                 {user}
               </p>

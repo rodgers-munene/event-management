@@ -1,6 +1,3 @@
-const BASE_URL = 'http://localhost:5000/api';
-
-
 export async function fetchAllEvents() {
     try {
       const response = await fetch('http://localhost:5000/api/events');
@@ -30,5 +27,5 @@ export async function fetchEventById(eventId) {
     }
   }
 
-export default BASE_URL;
+
 

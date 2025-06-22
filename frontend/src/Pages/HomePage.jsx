@@ -26,13 +26,13 @@ const HomePage = () => {
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('user'));
       if (storedData) {
-        setUser(storedData.user.name);
+        // setUser(storedData.user.name);
         setLoggedIn(true);
       }
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col mr-0 w-screen mx-auto">
+    <div className="flex flex-col w-screen min-h-screen mx-auto mr-0">
   
 
       {/* Hero Section */}
@@ -40,42 +40,42 @@ const HomePage = () => {
         <img
           src={img4}
           alt="Concert lights"
-          className="w-full h-full object-cover opacity-80"
+          className="object-cover w-full h-full opacity-80"
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-          <p className="text-3xl sm:text-5xl font-semibold sm:font-bold text-center mb-6">
+          <p className="mb-6 text-3xl font-semibold text-center sm:text-5xl sm:font-bold">
             Plan Your Perfect Event with EventPro
           </p>
           <button
              onClick={handleExplore}
-             className="px-6 py-3 bg-indigo-900 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-gray-300 transition duration-300 font-semibold">
+             className="px-6 py-3 font-semibold text-white transition duration-300 bg-indigo-900 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-gray-300">
             Explore Events
           </button>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-6 bg-gray-200 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto">
-          <h2 className=" text-2xl sm:text-3xl font-bold mb-12">Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gray-300 dark:bg-gray-700 p-8 text-center rounded-lg">
+      <section className="px-6 py-16 bg-gray-200 dark:bg-gray-800">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="mb-12 text-2xl font-bold  sm:text-3xl">Features</h2>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="p-8 text-center bg-gray-300 rounded-lg dark:bg-gray-700">
               <Music className="w-8 h-8 mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Music Events</h3>
+              <h3 className="mb-2 font-semibold">Music Events</h3>
               <p className="text-sm text-gray-700 dark:text-gray-100">
                 Plan and manage concerts, festivals, and music shows effortlessly.
               </p>
             </div>
-            <div className="bg-gray-300 dark:bg-gray-700 p-8 text-center rounded-lg">
+            <div className="p-8 text-center bg-gray-300 rounded-lg dark:bg-gray-700">
               <Users className="w-8 h-8 mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Corporate Meetings</h3>
+              <h3 className="mb-2 font-semibold">Corporate Meetings</h3>
               <p className="text-sm text-gray-700 dark:text-gray-100">
                 Organize corporate meetings, seminars, and business conferences.
               </p>
             </div>
-            <div className="bg-gray-300 dark:bg-gray-700 p-8 text-center rounded-lg">
+            <div className="p-8 text-center bg-gray-300 rounded-lg dark:bg-gray-700">
               <Cake className="w-8 h-8 mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Private Parties</h3>
+              <h3 className="mb-2 font-semibold">Private Parties</h3>
               <p className="text-sm text-gray-700 dark:text-gray-100">
                 Effortlessly plan weddings, birthdays, and private celebrations.
               </p>
@@ -85,10 +85,10 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 px-6 bg-gray-100 dark:bg-gray-700">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-12 dark:text-white text-black">What Our Users Say</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="px-6 py-16 bg-gray-100 dark:bg-gray-700">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="mb-12 text-2xl font-bold text-black sm:text-3xl dark:text-white">What Our Users Say</h2>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
               {
                 name: "Amad Diallo.",
@@ -103,15 +103,15 @@ const HomePage = () => {
                 quote: "Our festival was a hit thanks to EventPro's comprehensive tools!",
               },
             ].map((testimonial, index) => (
-              <div key={index} className="bg-gray-300 dark:bg-gray-600 p-6 rounded-lg shadow-lg text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gray-300 dark:bg-gray-900 rounded-full overflow-hidden">
+              <div key={index} className="p-6 text-center bg-gray-300 rounded-lg shadow-lg dark:bg-gray-600">
+                <div className="w-16 h-16 mx-auto mb-4 overflow-hidden bg-gray-300 rounded-full dark:bg-gray-900">
                   <img
                     src={img2}
                     alt={testimonial.name}
-                    className="w-full h-full object-cover"
+                    className="object-cover w-full h-full"
                   />
                 </div>
-                <p className="text-gray-700 dark:text-gray-100 mb-4">"{testimonial.quote}"</p>
+                <p className="mb-4 text-gray-700 dark:text-gray-100">"{testimonial.quote}"</p>
                 <p className="text-sm text-gray-900 dark:text-gray-300">- {testimonial.name}</p>
               </div>
             ))}
@@ -120,11 +120,11 @@ const HomePage = () => {
       </section>
 
       {/* Sign Up Section */}
-      <section className="py-16 px-4 bg-gray-200 dark:bg-gray-800">
-        <div className="flex flex-col md:flex-row items-center justify-between p-2 sm:p-8 rounded-lg shadow-lg">
+      <section className="px-4 py-16 bg-gray-200 dark:bg-gray-800">
+        <div className="flex flex-col items-center justify-between p-2 rounded-lg shadow-lg md:flex-row sm:p-8">
           <div className='md:w-[45%]'>
-            <h2 className="text-xl sm:text-3xl font-bold mb-6 ">Join EventPro Today!</h2>
-            <p className="text-gray-700 dark:text-gray-300 mb-8 text-sm sm:text-base">
+            <h2 className="mb-6 text-xl font-bold sm:text-3xl ">Join EventPro Today!</h2>
+            <p className="mb-8 text-sm text-gray-700 dark:text-gray-300 sm:text-base">
               Sign up now to start planning your events with ease and efficiency. 
               Don't miss out on our exclusive features designed to make your event a success.
             </p>
@@ -137,7 +137,7 @@ const HomePage = () => {
               {!loggedIn && (
                 <button 
                 onClick={handleClick}
-                className=" text-bold text-2xl w-full bg-black text-white py-3 rounded-md" to={'/Auth'}>
+                className="w-full py-3 text-2xl text-white bg-black rounded-md  text-bold" to={'/Auth'}>
                 Sign Up
 
               </button>
@@ -145,7 +145,7 @@ const HomePage = () => {
               {loggedIn && (
                 <button 
                 onClick={handleUpdates}
-                className=" text-bold sm:text-2xl w-full bg-black text-white py-3 rounded-md" to={'/Auth'}>
+                className="w-full py-3 text-white bg-black rounded-md  text-bold sm:text-2xl" to={'/Auth'}>
                 Recieve Updates
                 </button>
               )}
@@ -163,21 +163,21 @@ const HomePage = () => {
       </section>
 
       {/* Footer */}
-      <footer className=" bg-gray-900 dark:bg-gray-300 dark:text-black text-white py-8 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      <footer className="px-6 py-8 text-white bg-gray-900  dark:bg-gray-300 dark:text-black">
+        <div className="grid grid-cols-1 gap-8 mx-auto max-w-7xl md:grid-cols-2">
           <div>
-            <h3 className="text-xl font-bold mb-2">EventPro</h3>
+            <h3 className="mb-2 text-xl font-bold">EventPro</h3>
             <p className="text-gray-400 dark:text-gray-900">Your go-to solution for seamless event planning.</p>
           </div>
-          <div className="flex flex-col md:flex-row md:justify-end items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+          <div className="flex flex-col items-start space-y-4 md:flex-row md:justify-end md:items-center md:space-y-0 md:space-x-6">
             <div className="flex space-x-4">
               <Facebook className="w-6 h-6" />
               <Twitter className="w-6 h-6" />
             </div>
             <div className="flex space-x-6">
-              <a href="#" className="text-sm sm:text-base text-gray-400 dark:text-gray-900 hover:text-white">Privacy Policy</a>
-              <a href="#" className="text-sm sm:text-base text-gray-400 dark:text-gray-900 hover:text-white">Terms of Service</a>
-              <a href="#" className="text-sm sm:text-base text-gray-400 dark:text-gray-900 hover:text-white">Contact Us</a>
+              <a href="#" className="text-sm text-gray-400 sm:text-base dark:text-gray-900 hover:text-white">Privacy Policy</a>
+              <a href="#" className="text-sm text-gray-400 sm:text-base dark:text-gray-900 hover:text-white">Terms of Service</a>
+              <a href="#" className="text-sm text-gray-400 sm:text-base dark:text-gray-900 hover:text-white">Contact Us</a>
             </div>
           </div>
         </div>
