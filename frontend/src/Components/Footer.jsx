@@ -2,7 +2,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <div className='w-full  dark:text-white text-gray-900 mt-12 py-12 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300'>
+    <div className='w-full  dark:text-white text-gray-900 py-12 dark:border-gray-800 transition-colors duration-300'>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between gap-8">
           {/* Company Info */}

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import slugify from "slugify";
-import { FaCalendarAlt, FaMapMarkerAlt, FaArrowRight } from "react-icons/fa";
+import { FaCalendarAlt, FaMapMarkerAlt} from "react-icons/fa";
 
 const EventCard = ({ event }) => {
   function formatDate(dateString) {
@@ -61,7 +61,7 @@ const EventCard = ({ event }) => {
             to={`/event-details/${event.id}/${slugify(event.event_title, {lower: true, trim: true})}`}
             className="flex-1 flex items-center justify-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-white rounded-lg transition-colors duration-300"
           >
-            View Details <FaArrowRight className="ml-2" />
+            View Details
           </Link>
           <Link
             to={`/pay/${event.id}/${slugify(event.event_title, {lower: true, trim: true})}`}
