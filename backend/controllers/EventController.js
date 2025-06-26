@@ -2,9 +2,29 @@ const db = require("../config/db");
 
 // get all events
 const getAllEvents = async (req, res, next) => {
+  const { limit, page,  } = req.query
+  const dataLimit = limit? parseInt(limit) : 5
+  const pageLimit = page? parseInt(page): 1
+  const offset = (pageLimit - 1) * dataLimit
+  
   try {
-    const [rows] = await db.query("SELECT * FROM events");
-    res.status(200).json(rows);
+
+    const baseQuery = `SELECT * FROM events LIMIT ${dataLimit} OFFSET ${offset}`;
+
+
+    const [rows] = await db.query(baseQuery);
+
+    const [countRows] = await db.query("SELECT COUNT(*) as total FROM events")
+    res.status(200).json({
+      success: true,
+      data: rows,
+      pagination: {
+          total: countRows[0].total,
+          page: pageLimit,
+          limit: dataLimit,
+          totalPages: Math.ceil(countRows[0].total / dataLimit)
+      }
+    });
   } catch (error) {
     next(error);
   }
