@@ -1,7 +1,14 @@
-import { FiSearch, FiMapPin, FiCalendar } from 'react-icons/fi';
+import { FiSearch, FiMapPin } from 'react-icons/fi';
 import { FaMagnifyingGlass } from 'react-icons/fa6';
+import { getGlobalEvents } from '../../api';
 
 const SearchBar = () => {
+    const getEvents = async () =>{
+      const locationData = await getGlobalEvents()
+      console.log(locationData.data)
+    }
+
+  
   return (
     <div className="w-[95vw] sm:w-[80vw] mx-auto p-4">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
@@ -28,7 +35,9 @@ const SearchBar = () => {
                 className="w-full bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400 text-lg"
               />
             </div>
-            <button className="">
+            <button
+            onClick={getEvents}
+             className="">
                 <FaMagnifyingGlass className='text-purple-600' />
               </button>
           </div>

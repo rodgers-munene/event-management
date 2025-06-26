@@ -39,7 +39,7 @@ const HomePage = () => {
       <section className="px-6 py-16 bg-gray-100 dark:bg-gray-700">
         <div className="mx-auto max-w-7xl">
           <h2 className="mb-12 text-2xl font-bold text-black sm:text-3xl dark:text-white">
-            Upcoming Events
+            Events Around 
           </h2>         
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {events.map((event, index) => (
