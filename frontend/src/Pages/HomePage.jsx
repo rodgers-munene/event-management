@@ -14,8 +14,8 @@ const HomePage = () => {
   useEffect(() => {
     async function loadEvents() {
       try {
-        const data = await fetchAllEvents();
-        setEvents(data);
+        const results = await fetchAllEvents();
+        setEvents(results.data  );
       } catch (err) {
         setError(err.message);
       } finally {

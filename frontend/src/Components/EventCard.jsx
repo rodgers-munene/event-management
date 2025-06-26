@@ -17,8 +17,9 @@ const EventCard = ({ event }) => {
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200 dark:border-gray-700">
       <div className="relative">
         <img
-          src={event.image_url}
+          src={event.thumbnail_url}
           alt={event.event_title}
+          loading="lazy"
           className="w-full h-48 sm:h-56 object-cover"
         />
 

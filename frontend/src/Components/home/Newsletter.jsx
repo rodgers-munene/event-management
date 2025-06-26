@@ -10,7 +10,7 @@ const Newsletter = () => {
   const navigate = useNavigate();
   
   const handleClick = () => {
-      navigate("/authentication");
+      navigate("/login");
     };
     
     const handleUpdates = () => {
@@ -19,15 +19,16 @@ const Newsletter = () => {
   
   return (
     <div className="w-full flex justify-center py-5 bg-gray-200 dark:bg-gray-800">
-        <div className="w-full sm:w-[97%] flex justify-between p-2 rounded-lg bg-gray-300 shadow-xl ms-center flex-col bg md:flex-row sm:p-8">
+        <div className="w-full sm:w-[97%] flex justify-between p-2 rounded-lg bg-gray-300 dark:bg-gray-900 shadow-xl ms-center flex-col bg md:flex-row sm:p-8">
           <div className="md:w-[45%]">
             <h2 className="mb-6 text-xl font-bold sm:text-3xl ">
-              Join EventPro Today!
+              {token === null? "Join EventPro Today!" : "Enter Email to Receive updates"}
             </h2>
             <p className="mb-8 text-sm text-gray-700 dark:text-gray-300 sm:text-base">
-              Sign up now to start planning your events with ease and
+              {token === null? `Sign up now to start planning your events with ease and
               efficiency. Don't miss out on our exclusive features designed to
-              make your event a success.
+              make your event a success.` : `Stay in the loop! Enter your email to get 
+              the latest event updates, reminders, and exclusive offers straight to your inbox.`}
             </p>
             <div className="space-y-4">
               <input
@@ -39,7 +40,6 @@ const Newsletter = () => {
                 <button
                   onClick={handleClick}
                   className="w-full py-3 text-2xl text-white bg-black rounded-md text-bold"
-                  to={"/signup"}
                 >
                   Sign Up
                 </button>
@@ -48,7 +48,6 @@ const Newsletter = () => {
                 <button
                   onClick={handleUpdates}
                   className="w-full py-3 text-white bg-black rounded-md text-bold sm:text-2xl"
-                  to={"/Auth"}
                 >
                   Recieve Updates
                 </button>
