@@ -55,7 +55,7 @@ const Login = () => {
           localStorage.setItem('user', JSON.stringify(data.userDetails)); // Store user data in localStorage
           setUser(data.userDetails)
           localStorage.setItem('token', JSON.stringify(data.token))
-          setToken(token)
+          setToken(data.token)
 
           const decoded = jwtDecode(data.token)
           const expiresAt = decoded.exp * 1000

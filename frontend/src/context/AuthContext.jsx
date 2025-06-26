@@ -21,8 +21,6 @@ export const AuthProvider = ({ children }) => {
   });
   const [token, setToken] = useState(localStorage.getItem("token"));
 
-  const [isLogin, setIsLogin] = useState(true); // Default state: show login form
-
   // check token validity on first mount and every 15 minutes
   useEffect(() => {
     const checkTokenValidity = () => {
@@ -45,10 +43,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user')
     localStorage.removeItem('token')
   }
-  // Function to toggle between login and registration
-  const toggleAuthForm = () => {
-    setIsLogin((prevState) => !prevState);
-  };
+  
 
   return (
     <AuthContext.Provider value={{ user, token, setUser, setToken, logout }}>

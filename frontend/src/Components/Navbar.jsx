@@ -84,7 +84,7 @@ const Navbar = () => {
   </li>
 
   <div className='border-t pt-2 mt-2 space-y-2'>
-    {token === null ? (
+    {token === null && (
       <button
         onClick={() => {
           handleClick();
@@ -94,7 +94,9 @@ const Navbar = () => {
       >
         Login
       </button>
-    ) : (
+    ) }
+    
+    {token !== null &&(
       <>
         <button
           onClick={() => {
