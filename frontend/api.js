@@ -41,7 +41,7 @@ export const getGlobalEvents = async() => {
     const eventResponse = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?latlong=${locationData.latitude},${locationData.longitude}&radius=10000&unit=km&apikey=${TICKETMASTER_KEY}&size=10`)
     const eventData = await eventResponse.json()
 
-    return { data: eventData}
+    return { data: eventData._embedded.events}
     
   } catch (error) {
     console.error("Error Fetching Events by location")

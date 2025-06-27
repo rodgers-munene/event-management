@@ -59,13 +59,13 @@ const EventCard = ({ event }) => {
         
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
-            to={`/event-details/${event.id}/${slugify(event.event_title, {lower: true, trim: true})}`}
+            to={`/event-details/${event.id}/${slugify(String(event.event_title), {lower: true, trim: true})}`}
             className="flex-1 flex items-center justify-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-purple-600 dark:hover:bg-purple-700 text-white rounded-lg transition-colors duration-300"
           >
             View Details
           </Link>
           <Link
-            to={`/pay/${event.id}/${slugify(event.event_title, {lower: true, trim: true})}`}
+            to={`/pay/${event.id}/${slugify(String(event.event_title), {lower: true, trim: true})}`}
             className="flex-1 flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-300"
           >
             Register Now
