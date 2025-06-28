@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import slugify from "slugify";
 import { FaCalendarAlt, FaMapMarkerAlt} from "react-icons/fa";
 
-const EventCard = ({ event }) => {
+const EventCard = ({ event }) => { 
   function formatDate(dateString) {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);

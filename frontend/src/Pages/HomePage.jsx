@@ -5,22 +5,18 @@ import HeroSection from "../Components/home/HeroSection";
 import Features from "../Components/home/Features";
 import Newsletter from "../Components/home/Newsletter";
 import CreateEvent from "../Components/home/CreateEvent";
-import { getGlobalEvents } from "../../api";
-import GlobalCard from "../Components/GlobalCard";
+
 
 const HomePage = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [global, setGlobal] = useState([]);
+
 
   useEffect(() => {
     async function loadEvents() {
       try {
-        const results = await fetchAllEvents();
-        const globalData = await getGlobalEvents();
+        const results = await fetchAllEvents();        
         setEvents(results.data);
-        setGlobal(globalData.data);
-        console.log(globalData.data)
       } catch (err) {
         setError(err.message);
       } finally {
@@ -52,12 +48,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {global.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
-      </div>
 
       {/* create event */}
       <CreateEvent />

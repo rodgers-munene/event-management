@@ -10,7 +10,6 @@ const CreateEvent = () => {
     eventEndDate: "",
     eventLocation: "",
     eventStartTime: '',
-    eventEndDate: '',
     eventPrice: "",
     image: "",
   });
@@ -32,7 +31,6 @@ const CreateEvent = () => {
       event_start_date: formData.eventStartDate,
       event_end_date: formData.eventEndDate,
       event_start_time: formData.eventStartTime,
-      event_end_date: formData.eventEndDate,
       event_location: formData.eventLocation,
       event_price: formData.eventPrice,
       image_url: formData.image,

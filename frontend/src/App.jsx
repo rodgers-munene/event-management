@@ -8,6 +8,7 @@ import RouteLayout from './Layouts/RouteLayout'
 import NotFound from './Components/NotFound'
 import Login from './Pages/Auth/Login'
 import Register from './Pages/Auth/Register'
+import ProfilePage from './Pages/Profile'
 
 const App = () => {
 
@@ -22,6 +23,7 @@ const App = () => {
         <Route path='/event-details/:id/:title' element={<RouteLayout><EventDetails/></RouteLayout>} />
         <Route path='/event-listings' element={<RouteLayout><EventListings /></RouteLayout>} />
         <Route path='pay/:id/:title' element={<RouteLayout><Pay /></RouteLayout>} />
+        <Route path='/profile' element={<RouteLayout><ProfilePage /></RouteLayout>} />
         {/* auth routes */}
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Register />} />
