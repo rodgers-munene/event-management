@@ -74,6 +74,9 @@ const loginUser = async (req, res, next) => {
       id: user.id,
       userName: user.user_name,
       userEmail: user.user_email,
+      phone: user.phone,
+      organization: user.organization,
+      createdAt: user.date_created,
     };
 
     const token = jwt.sign({ userDetails }, process.env.JWT_SECRET, {
@@ -86,4 +89,55 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const updateUser = async (req, res, next) => {
+  const id = req.params.id;
+  const newUser = { ...req.body };
+  try {
+    // Authorization check    
+    if (String(req.user.id) !== String(id)) {
+      res.status(401);
+      throw new Error("Unauthorized User");
+    }
+
+    const updatableFields = ["user_name", "user_email", "phone", "organization"];
+    const fields = [];
+    const values = [];
+
+    for (const key in newUser) {
+      if (updatableFields.includes(key)) {
+        fields.push(`${key} = ?`);
+        values.push(newUser[key]);
+      } else {
+        res.status(400);
+        throw new Error(`Invalid field: ${key}`);
+      }
+    }
+
+    if (fields.length === 0) {
+      res.status(400);
+      throw new Error("Fill at least one valid field to update!");
+    }
+
+    const [userAvailable] = await db.query("SELECT * FROM users WHERE id = ?", [id]);
+
+    if (userAvailable.length === 0) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    const query = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
+    values.push(id);
+
+    const [result] = await db.query(query, values);
+
+    res.status(200).json({
+      message: "User updated successfully",
+      affectedRows: result.affectedRows,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+module.exports = { registerUser, loginUser, updateUser };

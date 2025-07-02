@@ -60,9 +60,7 @@ const getMyEvents = async (req, res, next) => {
     }
     const [results] = await db.query('SELECT * FROM events where user_id = ?', [id])
     if(results.length === 0){
-      return res.status(200).json({
-        message: "User has not created any events"
-      })
+      return res.status(200).json([])
     }
 
     res.status(200).json(results)

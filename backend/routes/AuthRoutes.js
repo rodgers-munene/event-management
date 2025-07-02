@@ -1,4 +1,5 @@
-const { registerUser, loginUser } = require('../controllers/UserController')
+const { registerUser, loginUser, updateUser } = require('../controllers/UserController')
+const validateToken = require('../middleware/validateToken')
 
 const router = require('express').Router()
 
@@ -13,5 +14,10 @@ router.post('/register', registerUser)
 // public route
 
 router.post('/login', loginUser)
+
+// update the user
+// PUT /api/auth/update/:id
+// private route
+router.put('/update/:id', validateToken, updateUser)
 
 module.exports = router
