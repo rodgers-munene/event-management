@@ -54,7 +54,7 @@ const Login = () => {
           setShowPopup(true);
           localStorage.setItem('user', JSON.stringify(data.userDetails)); // Store user data in localStorage
           setUser(data.userDetails)
-          localStorage.setItem('token', JSON.stringify(data.token))
+          localStorage.setItem('token', data.token)
           setToken(data.token)
 
           const decoded = jwtDecode(data.token)

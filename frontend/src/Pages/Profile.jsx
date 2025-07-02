@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { userEvents } from '../../api';
 
 const ProfilePage = () => {
-  const { user } = useAuth()
+  const { user, token } = useAuth()
   const [events, setEvents] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
   
 
-  // Mock data - replace with actual API calls
   useEffect(() => {
-    // Simulate API fetch
+    
+    
     const fetchData = async () => {
-      try {
-
+      try {        
+        const myEvents = await userEvents(user.id, token)
+        setEvents(myEvents)
        
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -22,8 +26,10 @@ const ProfilePage = () => {
       }
     };
 
-    fetchData();
-  }, []);
+    if(user?.id && token) {
+      fetchData();
+    }
+  }, [user?.id, token]);
 
   const handleUpdateProfile = async (updatedData) => {
     try {
@@ -44,7 +50,7 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-950">
+      <div className="flex items-center w-screen justify-center min-h-screen bg-gray-50 dark:bg-gray-950">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
       </div>
     );
@@ -72,13 +78,13 @@ const ProfilePage = () => {
               </div>
               <div className="text-center">
                 <p className="text-3xl font-bold text-green-400">
-                  {events.filter(e => new Date(e.date) > new Date()).length}
+                  {events.filter(e => new Date(e.event_start_date) > new Date()).length}
                 </p>
                 <p className="text-gray-400">Upcoming</p>
               </div>
               <div className="text-center">
                 <p className="text-3xl font-bold text-blue-400">
-                  {events.filter(e => new Date(e.date) <= new Date()).length}
+                  {events.filter(e => new Date(e.event_start_date) <= new Date()).length}
                 </p>
                 <p className="text-gray-400">Completed</p>
               </div>
@@ -139,7 +145,11 @@ const ProfilePage = () => {
           <div className="lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Your Events</h2>
-              <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+              <button 
+              onClick={() => {
+                navigate('/create-event')
+              }}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
@@ -156,13 +166,17 @@ const ProfilePage = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-2">No Events Created Yet</h3>
                 <p className="text-gray-400 mb-6">You haven't created any events. Get started by creating your first event!</p>
-                <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg">
+                <button
+                onClick={() => {
+                  navigate('/create-event')
+                }}
+                 className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg">
                   Create Your First Event
                 </button>
               </div>
             ) : (
               <div className="space-y-4">
-                {events.map(event => (
+                {events?.map(event => (
                   <EventCard key={event.id} event={event} />
                 ))}
               </div>
@@ -177,9 +191,9 @@ const ProfilePage = () => {
 // Edit Profile Form Component
 const EditProfileForm = ({ user, onSave }) => {
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
-    phone: user.phone || '',
+    name: user.userName,
+    email: user.userEmail,
+    phone: user.userPhone || '',
     organization: user.organization || ''
   });
 
@@ -202,7 +216,7 @@ const EditProfileForm = ({ user, onSave }) => {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full dark:bg-gray-700 border dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
           required
         />
       </div>
@@ -213,7 +227,7 @@ const EditProfileForm = ({ user, onSave }) => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full dark:bg-gray-700 border dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
           required
         />
       </div>
@@ -224,7 +238,7 @@ const EditProfileForm = ({ user, onSave }) => {
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full dark:bg-gray-700 border dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
       </div>
       <div>
@@ -234,7 +248,7 @@ const EditProfileForm = ({ user, onSave }) => {
           name="organization"
           value={formData.organization}
           onChange={handleChange}
-          className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full dark:bg-gray-700 border dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
       </div>
       <div className="flex justify-end space-x-3 pt-4">
@@ -258,28 +272,28 @@ const EditProfileForm = ({ user, onSave }) => {
 
 // Event Card Component
 const EventCard = ({ event }) => {
-  const eventDate = new Date(event.date);
+  const eventDate = new Date(event.event_start_date);
   const isPast = eventDate <= new Date();
   
   return (
-    <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+    <div className="dark:bg-gray-800 bg-gray-200 rounded-xl shadow-lg overflow-hidden">
       <div className="p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start space-x-4">
-            <div className="bg-gray-700 rounded-lg p-3 text-center min-w-[70px]">
+            <div className="bg-gray-400 dark:bg-gray-700 rounded-lg p-3 text-center min-w-[70px]">
               <p className="text-xl font-bold">{eventDate.getDate()}</p>
-              <p className="text-sm text-gray-400 uppercase">
+              <p className="text-sm uppercase">
                 {eventDate.toLocaleString('default', { month: 'short' })}
               </p>
             </div>
             <div>
-              <h3 className="text-lg font-bold">{event.title}</h3>
-              <p className="text-gray-400 flex items-center space-x-2 mt-1">
+              <h3 className="text-lg font-bold">{event.event_title}</h3>
+              <p className="dark:text-gray-200 text-gray-700 flex items-center space-x-2 mt-1">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>
-                  {eventDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {event.duration}
+                  {eventDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </p>
               <p className="text-gray-400 flex items-center space-x-2 mt-1">
@@ -287,7 +301,7 @@ const EventCard = ({ event }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span>{event.location}</span>
+                <span className='dark:text-gray-200 text-gray-700'>{event.event_location}</span>
               </p>
             </div>
           </div>
@@ -298,10 +312,10 @@ const EventCard = ({ event }) => {
               {isPast ? 'Completed' : 'Upcoming'}
             </span>
             <div className="flex space-x-2">
-              <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg">
+              <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">
                 View
               </button>
-              <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg">
+              <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">
                 Edit
               </button>
             </div>
