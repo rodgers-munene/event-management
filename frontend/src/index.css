@@ -1,80 +1,97 @@
-body{
-  overflow-x: hidden;
-}
-a{
-  text-decoration: none;
-  color: inherit;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  ::selection {
+    @apply bg-primary-500/30 text-primary-900;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-600;
+  }
 }
 
-.navbar{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100vw;
-  /* padding: 15px 8%; */
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-xl transition-all duration-200 active:scale-95;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-soft overflow-hidden;
+  }
+
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent;
+  }
+
+  .glass {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg;
+  }
 }
 
-.navbar ul li{
-  display: inline-block;
-  /* padding: 5px 10px; */
-  /* margin: 0 10px; */
-}
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 
-a.active{
-  color: red;
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
 
-}
-.navbar button{ 
-  border: 0;
-  outline: 0;
-  cursor: pointer;
-  font-size: 15px;
-}
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
 
-.container h1{
-  font-size: 70px;
-  font-weight: 500;
-}
-.contact-btns{
-  display: flex;
-  padding-bottom: 20px;
-  justify-content: center;
-  gap: 20px;
-  align-items: center;
-}
-.jobs{
-  padding: 40px 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-.jobs a{
-  flex: 1;
-  text-decoration: none;
-  padding: 10px;
-  background: #efefef;
-  color:#000 ;
-}
-.job-details{
-  padding: 50px 0;
-}
-.job-details p{
-  max-width: 800px;
-  padding: 10px;
-}
- button{
-  background-color: black;
-  color: white;
-  border: 0;
-  margin-top: 10px;
-  cursor: pointer;
-  outline: 0;
-  padding: 5px 10px;
- }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
- 
-
- @tailwind base;
- @tailwind components;
- @tailwind utilities
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

@@ -1,1 +1,16 @@
 /node_modules
+.env
+.env.local
+.env.development
+.env.test
+
+test-full-output.txt
+test-output.log
+test-results.txt
+test-db.js
+
+
+SECURITY.md
+REDIS_SETUP.md
+DATABASE.md
+API_DOCUMENTATION.md

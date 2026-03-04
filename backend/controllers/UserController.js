@@ -1,16 +1,14 @@
 const db = require("../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { registerSchema, loginSchema, updateUserSchema } = require("../validators/userValidator");
 
 //register user logic
 const registerUser = async (req, res, next) => {
-  const { user_email, user_name, password } = req.body;
-
   try {
-    if (!user_email || !user_name || !user_name || !password) {
-      res.status(400);
-      throw new Error("All fields are mandatory!!");
-    }
+    // Validate request body
+    const validatedData = registerSchema.parse({ body: req.body });
+    const { user_email, user_name, password } = validatedData.body;
 
     const [existingUser] = await db.query(
       "SELECT * from users where user_email = ?",
@@ -31,6 +29,7 @@ const registerUser = async (req, res, next) => {
     );
 
     return res.status(201).json({
+      success: true,
       message: "User registered successfully",
       userId: results.insertId,
     });
@@ -42,13 +41,10 @@ const registerUser = async (req, res, next) => {
 // login user logic
 
 const loginUser = async (req, res, next) => {
-  const { user_email, password } = req.body;
-
   try {
-    if (!user_email || !password) {
-      res.status(400);
-      throw new Error("All fields are mandatory");
-    }
+    // Validate request body
+    const validatedData = loginSchema.parse({ body: req.body });
+    const { user_email, password } = validatedData.body;
 
     // check if user exist
     const [existingUser] = await db.query(
@@ -70,10 +66,11 @@ const loginUser = async (req, res, next) => {
       res.status(400);
       throw new Error("User password invalid!");
     }
+    
     const userDetails = {
       id: user.id,
-      userName: user.user_name,
-      userEmail: user.user_email,
+      user_name: user.user_name,
+      user_email: user.user_email,
       phone: user.phone,
       organization: user.organization,
       createdAt: user.date_created,
@@ -83,17 +80,24 @@ const loginUser = async (req, res, next) => {
       expiresIn: "5h",
     });
 
-    res.status(200).json({ token, userDetails });
+    res.status(200).json({ 
+      success: true,
+      token, 
+      userDetails 
+    });
   } catch (error) {
     next(error);
   }
 };
 
 const updateUser = async (req, res, next) => {
-  const id = req.params.id;
-  const newUser = { ...req.body };
   try {
-    // Authorization check    
+    // Validate request parameters and body
+    const validatedData = updateUserSchema.parse({ params: req.params, body: req.body });
+    const id = validatedData.params.id;
+    const newUser = validatedData.body;
+
+    // Authorization check
     if (String(req.user.id) !== String(id)) {
       res.status(401);
       throw new Error("Unauthorized User");
@@ -104,12 +108,9 @@ const updateUser = async (req, res, next) => {
     const values = [];
 
     for (const key in newUser) {
-      if (updatableFields.includes(key)) {
+      if (updatableFields.includes(key) && newUser[key] !== undefined) {
         fields.push(`${key} = ?`);
         values.push(newUser[key]);
-      } else {
-        res.status(400);
-        throw new Error(`Invalid field: ${key}`);
       }
     }
 
@@ -130,9 +131,13 @@ const updateUser = async (req, res, next) => {
 
     const [result] = await db.query(query, values);
 
+    const [updatedUser] = await db.query("SELECT * FROM users WHERE id = ?", [id]);
+
     res.status(200).json({
+      success: true,
       message: "User updated successfully",
       affectedRows: result.affectedRows,
+      data: updatedUser[0]
     });
   } catch (error) {
     next(error);

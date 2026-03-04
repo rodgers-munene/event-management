@@ -1,30 +1,51 @@
 const db = require("../config/db");
+const cacheService = require("../config/cache");
+const { createEventSchema, updateEventSchema, getEventSchema, paginationSchema } = require("../validators/eventValidator");
+const { logger } = require("../config/logger");
 
 // get all events
 const getAllEvents = async (req, res, next) => {
-  const { limit, page,  } = req.query
-  const dataLimit = limit? parseInt(limit) : 5
-  const pageLimit = page? parseInt(page): 1
-  const offset = (pageLimit - 1) * dataLimit
-  
   try {
+    // Validate pagination parameters
+    const validatedData = paginationSchema.parse({ query: req.query });
+    
+    const dataLimit = validatedData.query.limit ?? 5;
+    const pageLimit = validatedData.query.page ?? 1;
+    const offset = (pageLimit - 1) * dataLimit;
 
-    const baseQuery = `SELECT * FROM events LIMIT ${dataLimit} OFFSET ${offset}`;
+    // Create cache key based on pagination
+    const cacheKey = `events:all:limit:${dataLimit}:page:${pageLimit}`;
 
+    // Try to get from cache first
+    const cachedData = await cacheService.get(cacheKey);
+    if (cachedData) {
+      logger.debug('Cache hit for events list', { cacheKey });
+      return res.status(200).json(cachedData);
+    }
 
-    const [rows] = await db.query(baseQuery);
+    // Use parameterized queries to prevent SQL injection
+    const [rows] = await db.query(
+      "SELECT * FROM events LIMIT ? OFFSET ?",
+      [dataLimit, offset]
+    );
 
-    const [countRows] = await db.query("SELECT COUNT(*) as total FROM events")
-    res.status(200).json({
+    const [countRows] = await db.query("SELECT COUNT(*) as total FROM events");
+    
+    const responseData = {
       success: true,
       data: rows,
       pagination: {
-          total: countRows[0].total,
-          page: pageLimit,
-          limit: dataLimit,
-          totalPages: Math.ceil(countRows[0].total / dataLimit)
+        total: countRows[0].total,
+        page: pageLimit,
+        limit: dataLimit,
+        totalPages: Math.ceil(countRows[0].total / dataLimit)
       }
-    });
+    };
+
+    // Cache the response for 5 minutes
+    await cacheService.set(cacheKey, responseData, 300);
+
+    res.status(200).json(responseData);
   } catch (error) {
     next(error);
   }
@@ -32,17 +53,21 @@ const getAllEvents = async (req, res, next) => {
 
 // get specific event
 const getEvent = async (req, res, next) => {
-  const { id } = req.params;
-
   try {
-    const [rows] = await db.query("SELECT * FROM events WHERE id = ?", [id]);
+    const validatedData = getEventSchema.parse({ params: req.params });
+    const eventId = validatedData.params.id;
+
+    const [rows] = await db.query("SELECT * FROM events WHERE id = ?", [eventId]);
 
     if (rows.length === 0) {
       res.status(404);
       throw new Error("Event not found.");
     }
 
-    res.status(200).json(rows[0]);
+    res.status(200).json({
+      success: true,
+      data: rows[0]
+    });
   } catch (error) {
     next(error);
   }
@@ -71,22 +96,25 @@ const getMyEvents = async (req, res, next) => {
 }
 
 const postEvent = async (req, res, next) => {
-  const {
-    user_id,
-    event_title,
-    event_description,
-    event_start_date,
-    event_end_date,
-    event_location,
-    event_price,
-    image_url,
-  } = req.body;
-
   try {
- // authorize user
-    if(String(req.user.id) !== String(user_id)){
-      res.status(401)
-      throw new Error("Unauthorized User")
+    // Validate request body
+    const validatedData = createEventSchema.parse({ body: req.body });
+    
+    const {
+      user_id,
+      event_title,
+      event_description,
+      event_start_date,
+      event_end_date,
+      event_location,
+      event_price,
+      image_url,
+    } = validatedData.body;
+
+    // Authorize user
+    if (String(req.user.id) !== String(user_id)) {
+      res.status(401);
+      throw new Error("Unauthorized User");
     }
 
     const [result] = await db.query(
@@ -99,10 +127,16 @@ const postEvent = async (req, res, next) => {
         event_end_date,
         event_location,
         event_price,
-        image_url,
+        image_url || null,
       ]
     );
+    
+    // Invalidate events cache
+    await cacheService.invalidatePattern('events:all:*');
+    logger.info('Event created and cache invalidated', { eventId: result.insertId });
+    
     res.status(201).json({
+      success: true,
       message: "Event created successfully!",
       eventId: result.insertId,
     });
@@ -113,9 +147,27 @@ const postEvent = async (req, res, next) => {
 
 const updateEvent = async (req, res, next) => {
   try {
-    const eventId = req.params.id;
-    const update = { ...req.body };
-    delete update.user_id
+    // Validate request parameters and body
+    const validatedData = updateEventSchema.parse({ params: req.params, body: req.body });
+    const eventId = validatedData.params.id;
+    const update = validatedData.body;
+
+    // Check if event exists
+    const [eventAvailable] = await db.query(
+      "SELECT * FROM events WHERE id = ?",
+      [eventId]
+    );
+
+    if (eventAvailable.length === 0) {
+      res.status(404);
+      throw new Error("Event not found");
+    }
+
+    // Authorize user
+    if (String(req.user.id) !== String(eventAvailable[0].user_id)) {
+      res.status(401);
+      throw new Error("Unauthorized User");
+    }
 
     const updatableFields = [
       "event_title",
@@ -130,14 +182,10 @@ const updateEvent = async (req, res, next) => {
     const fields = [];
     const values = [];
 
-
     for (const key in update) {
-      if (updatableFields.includes(key)) {
+      if (updatableFields.includes(key) && update[key] !== undefined) {
         fields.push(`${key} = ?`);
         values.push(update[key]);
-      } else {
-        res.status(400);
-        throw new Error(`Invalid field: ${key}`);
       }
     }
 
@@ -146,27 +194,20 @@ const updateEvent = async (req, res, next) => {
       throw new Error("Fill at least one valid field to update!");
     }
 
-    const [eventAvailable] = await db.query(
-      "SELECT * FROM events WHERE id = ?",
-      [eventId]
-    );
+    // Add event ID to values for WHERE clause
+    values.push(eventId);
 
-    if (eventAvailable.length === 0) {
-      res.status(404);
-      throw new Error("Event not found");
-    }
-
-     // authorize user
-    if(String(req.user.id) !== String(eventAvailable[0].user_id)){
-      res.status(401)
-      throw new Error("Unauthorized User")
-    }
-
-    const query = `UPDATE events SET ${fields.join(", ")} WHERE id = ${eventId}`;
+    const query = `UPDATE events SET ${fields.join(", ")} WHERE id = ?`;
 
     const [result] = await db.query(query, values);
 
+    // Invalidate event cache
+    await cacheService.del(`events:id:${eventId}`);
+    await cacheService.invalidatePattern('events:all:*');
+    logger.info('Event updated and cache invalidated', { eventId });
+
     res.status(200).json({
+      success: true,
       message: "Event updated successfully",
       affectedRows: result.affectedRows,
     });
@@ -179,25 +220,36 @@ const updateEvent = async (req, res, next) => {
 
 const deleteEvent = async (req, res, next) => {
   try {
-    const id = req.params.id;
+    // Validate event ID parameter
+    const validatedData = getEventSchema.parse({ params: req.params });
+    const eventId = validatedData.params.id;
+
+    // Check availability of the event
+    const [event] = await db.query("SELECT * FROM events WHERE id = ?", [eventId]);
     
-    // availability of the event
-    const [event] = await db.query(`SELECT * FROM events WHERE id = ${id}`);
     if (event.length === 0) {
       res.status(404);
       throw new Error("Event not Found!");
     }
-    if(String(req.user.id) !== String(event[0].user_id)){
-      res.status(401)
-      throw new Error("Unauthorized User")
+    
+    // Authorize user
+    if (String(req.user.id) !== String(event[0].user_id)) {
+      res.status(401);
+      throw new Error("Unauthorized User");
     }
 
-    const [result] = await db.query(`DELETE FROM events WHERE id = ${id}`)
+    const [result] = await db.query("DELETE FROM events WHERE id = ?", [eventId]);
+
+    // Invalidate event cache
+    await cacheService.del(`events:id:${eventId}`);
+    await cacheService.invalidatePattern('events:all:*');
+    logger.info('Event deleted and cache invalidated', { eventId });
 
     res.status(200).json({
+      success: true,
       message: "Event Deleted successfully",
       affectedRows: result.affectedRows
-    })
+    });
   } catch (error) {
     next(error);
   }

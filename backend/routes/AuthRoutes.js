@@ -1,23 +1,23 @@
-const { registerUser, loginUser, updateUser } = require('../controllers/UserController')
-const validateToken = require('../middleware/validateToken')
+const { registerUser, loginUser, updateUser } = require('../controllers/UserController');
+const validateToken = require('../middleware/validateToken');
+const validate = require('../middleware/validate');
+const { authLimiter } = require('../middleware/rateLimiter');
+const { registerSchema, loginSchema, updateUserSchema } = require('../validators/userValidator');
+const router = require('express').Router();
 
-const router = require('express').Router()
-
-// register a user
+// REGISTER a user
 // POST /api/auth/register
-// public route
+// Public route with rate limiting
+router.post('/register', authLimiter, validate(registerSchema), registerUser);
 
-router.post('/register', registerUser)
-
-// login the user
+// LOGIN a user
 // POST /api/auth/login
-// public route
+// Public route with strict rate limiting
+router.post('/login', authLimiter, validate(loginSchema), loginUser);
 
-router.post('/login', loginUser)
-
-// update the user
+// UPDATE a user
 // PUT /api/auth/update/:id
-// private route
-router.put('/update/:id', validateToken, updateUser)
+// Private route
+router.put('/update/:id', validateToken, validate(updateUserSchema), updateUser);
 
-module.exports = router
+module.exports = router;

@@ -49,11 +49,20 @@ export const userEvents = async (userId, token) => {
   }
 }
 
-export const updateUser = async () => {
+export const updateUser = async (id, token, data) => {
   try {
-    const response = await fetch(`${BASE_URL}/`)
-  }catch(err){
+    const response = await fetch(`${BASE_URL}/auth/update/${id}`, {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    })
 
+    return response
+  }catch(err){
+    console.log("Failed to update use info", err)
   }
 }
 

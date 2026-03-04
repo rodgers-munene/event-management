@@ -1,194 +1,160 @@
-import React, { useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
-import { useMenu } from "../context/MenuContext";
-import { useAuth } from "../context/AuthContext";
-import { FaChevronDown } from "react-icons/fa";
-import { Home, Calendar1Icon } from "lucide-react";
+import { Link, useNavigate } from 'react-router-dom';
+import { Calendar, User, LogOut, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import useAuthStore from '../store/authStore';
+import NotificationBell from './NotificationBell';
 
 const Navbar = () => {
-  const { user, token, logout } = useAuth();
-  const { isOpen, toggleMenu } = useMenu();
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuthStore();
   const navigate = useNavigate();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const location = useLocation();
-
-  const handleClick = () => {
-    navigate("/login");
-  };
-
-  const toggleDropdown = () => {
-    setShowDropdown((prev) => !prev);
-  };
 
   const handleLogout = () => {
     logout();
-    setShowDropdown(false);
-    navigate("/");
+    navigate('/');
   };
 
   return (
-    <div className="flex justify-between items-center rounded-lg w-screen sm:w-[98%] p-2 relative">
-      <h1 className="text-4xl font-bold">
-        Event<span className="text-purple-800">PRO</span>
-      </h1>
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center justify-between h-16 w-full">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gray-900 rounded flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-lg font-bold text-gray-900">EventHub</span>
+          </Link>
 
-      {/* Large screen navigation */}
-      <ul className="hidden p-3 bg-gray-400 shadow-2xl dark:bg-gray-800 md:flex rounded-2xl">
-        <NavLink to="/">
-          <li className="px-5 flex items-center">
-            <Home className="size-5 mr-1" /> Home
-          </li>
-        </NavLink>
-        <NavLink to="/event-listings">
-          <li className="px-5 flex items-center">
-            <Calendar1Icon className="size-5 mr-1" />
-            Event Listings
-          </li>
-        </NavLink>
-      </ul>
-
-      {/* Small screen hamburger */}
-      <div className="flex items-center md:hidden">
-        <button
-          onClick={toggleMenu}
-          className="text-gray-800 focus:outline-none dark:text-gray-300"
-        >
-          <div className="relative flex flex-col items-center justify-between w-8 h-6">
-            <span
-              className={`block w-full h-[0.2rem] bg-current transform transition-transform duration-300 ${
-                isOpen ? "rotate-45 translate-y-4" : ""
-              }`}
-            />
-            <span
-              className={`block w-full h-[0.2rem] bg-current transition-opacity duration-300 ${
-                isOpen ? "opacity-0" : "opacity-100"
-              }`}
-            />
-            <span
-              className={`block w-full h-[0.2rem] bg-current transform transition-transform duration-300 ${
-                isOpen ? "-rotate-45 -translate-y-1" : ""
-              }`}
-            />
-          </div>
-        </button>
-
-        {/* Small screen nav links */}
-        <ul
-          className={`dark:bg-gray-800 bg-white shadow-xl flex flex-col absolute top-16 right-2 w-52 rounded-xl z-[1000] p-2 space-y-2 transition-transform duration-300 ease-in-out
-    ${isOpen ? "translate-y-0 opacity-100" : "-translate-y-[150%] opacity-0"}`}
-        >
-          <li onClick={toggleMenu}>
-            <NavLink
-              to="/"
-              className="block w-full px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
+            <Link to="/" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
               Home
-            </NavLink>
-          </li>
-
-          <li onClick={toggleMenu}>
-            <NavLink
-              to="/event-listings"
-              className="block w-full px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              Event Listings
-            </NavLink>
-          </li>
-
-          <div className="border-t pt-2 mt-2 space-y-2">
-            {token === null && (
-              <button
-                onClick={() => {
-                  handleClick();
-                  toggleMenu();
-                }}
-                className="w-full text-white bg-gray-800 dark:bg-gray-300 dark:text-black rounded-md px-4 py-2 hover:bg-gray-700 dark:hover:bg-gray-400 transition-colors"
-              >
-                Login
-              </button>
+            </Link>
+            <Link to="/event-listings" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+              Events
+            </Link>
+            {isAuthenticated && (
+              <Link to="/my-registrations" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                My Registrations
+              </Link>
             )}
+          </div>
 
-            {token !== null && (
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-4">
+            {isAuthenticated ? (
               <>
-                <button
-                  onClick={() => {
-                    if (location.pathname !== "/profile") {
-                      navigate("/profile");
-                    }
-                    toggleMenu();
-                  }}
-                  className="w-full text-left text-sm px-4 py-2 rounded-md text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                <NotificationBell />
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
                 >
-                  View Profile
-                </button>
+                  <User className="w-4 h-4" />
+                  {user?.user_name}
+                </Link>
                 <button
-                  onClick={() => {
-                    logout();
-                    toggleMenu();
-                    navigate("/");
-                  }}
-                  className="w-full text-left text-sm px-4 py-2 rounded-md text-red-600 hover:bg-red-100 dark:hover:bg-red-900 transition"
+                  onClick={handleLogout}
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   Logout
                 </button>
               </>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate('/login')}
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Login
+                </button>
+                <Link to="/create-event">
+                  <button className="bg-gray-900 text-white px-4 py-2 text-sm font-medium rounded hover:bg-gray-800 transition-colors">
+                    Create Event
+                  </button>
+                </Link>
+              </>
             )}
           </div>
-        </ul>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
-      {/* Large screen right side: Login or User Dropdown */}
-      <div className="relative hidden md:flex items-center space-x-4">
-        {token === null ? (
-          <button
-            onClick={handleClick}
-            className="text-white bg-gray-800 dark:bg-gray-300 dark:text-black font-medium rounded-xl px-5 py-2 transition duration-300 hover:bg-gray-700 dark:hover:bg-gray-400 shadow-md"
-          >
-            Login
-          </button>
-        ) : (
-          <div className="relative">
-            <button
-              onClick={toggleDropdown}
-              className="flex items-center text-sm font-medium text-black dark:text-white bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-xl transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-600 shadow-sm"
+      {/* Mobile menu */}
+      {isOpen && (
+        <div className="md:hidden border-t border-gray-200 bg-white">
+          <div className="px-4 py-4 space-y-4">
+            <Link
+              to="/"
+              onClick={() => setIsOpen(false)}
+              className="block text-sm text-gray-600 hover:text-gray-900"
             >
-              <FaUser className="mr-2" />
-              {user.userName}
-              <FaChevronDown className="ml-2" />
-            </button>
-
-            {showDropdown && (
-              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 overflow-hidden">
+              Home
+            </Link>
+            <Link
+              to="/event-listings"
+              onClick={() => setIsOpen(false)}
+              className="block text-sm text-gray-600 hover:text-gray-900"
+            >
+              Events
+            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/my-registrations"
+                  onClick={() => setIsOpen(false)}
+                  className="block text-sm text-gray-600 hover:text-gray-900"
+                >
+                  My Registrations
+                </Link>
+                <Link
+                  to="/profile"
+                  onClick={() => setIsOpen(false)}
+                  className="block text-sm text-gray-600 hover:text-gray-900"
+                >
+                  Profile
+                </Link>
                 <button
                   onClick={() => {
-                    if (location.pathname !== "/profile") {
-                      navigate("/profile");
-                    }
-                    setShowDropdown(false);
+                    handleLogout();
+                    setIsOpen(false);
                   }}
-                  className="w-full text-left text-sm px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                >
-                  View Profile
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left text-sm px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  className="block text-sm text-gray-600 hover:text-gray-900"
                 >
                   Logout
                 </button>
+              </>
+            ) : (
+              <>
                 <button
-                  onClick={() => setShowDropdown(false)}
-                  className="w-full text-left text-sm px-4 py-3 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  onClick={() => {
+                    navigate('/login');
+                    setIsOpen(false);
+                  }}
+                  className="block text-sm text-gray-600 hover:text-gray-900"
                 >
-                  Close ×
+                  Login
                 </button>
-              </div>
+                <Link
+                  to="/create-event"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full bg-gray-900 text-white px-4 py-2 text-sm font-medium rounded text-center"
+                >
+                  Create Event
+                </Link>
+              </>
             )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </nav>
   );
 };
 
