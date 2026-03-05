@@ -1,9 +1,162 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { Clock, MapPin, BarChart3, Plus, Pencil, X, Check, Calendar, Home, ChevronRight } from 'lucide-react';
+import slugify from 'slugify';
 import { eventsAPI, authAPI } from '../api/index.js';
 import { toast } from 'react-toastify';
 import useAuthStore from '../store/authStore.js';
 
+/* ─── Input ─────────────────────────────────────────────────────────── */
+const Field = ({ label, name, value, onChange, type = 'text' }) => (
+  <div>
+    <label className="block text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">{label}</label>
+    <input
+      type={type} name={name} value={value} onChange={onChange}
+      required={type === 'text' || type === 'email'}
+      className="w-full px-3 py-2 border border-gray-200 rounded text-[13px] text-gray-900 focus:outline-none focus:border-gray-900 transition-colors bg-white placeholder-gray-300"
+    />
+  </div>
+);
+
+/* ─── Edit form ─────────────────────────────────────────────────────── */
+const EditForm = ({ user, onSave, onCancel, updating }) => {
+  const [form, setForm] = useState({
+    user_name:    user?.user_name    || '',
+    user_email:   user?.user_email   || '',
+    phone:        user?.phone        || '',
+    organization: user?.organization || '',
+  });
+  const change = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
+
+  return (
+    <form onSubmit={e => { e.preventDefault(); onSave(form); }} className="space-y-3">
+      <Field label="Full Name"    name="user_name"    value={form.user_name}    onChange={change} />
+      <Field label="Email"        name="user_email"   value={form.user_email}   onChange={change} type="email" />
+      <Field label="Phone"        name="phone"        value={form.phone}        onChange={change} type="tel" />
+      <Field label="Organization" name="organization" value={form.organization} onChange={change} />
+      <div className="flex gap-2 pt-2">
+        <button type="button" onClick={onCancel}
+          className="flex-1 py-2 rounded border border-gray-200 text-[12px] font-semibold text-gray-600 hover:border-gray-900 transition-colors">
+          Cancel
+        </button>
+        <button type="submit" disabled={updating}
+          className="flex-1 py-2 rounded bg-gray-900 text-white text-[12px] font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50">
+          {updating ? 'Saving…' : 'Save Changes'}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+/* ─── Profile details ───────────────────────────────────────────────── */
+const ProfileDetails = ({ user }) => {
+  const rows = [
+    { label: 'Full Name',    value: user?.user_name    },
+    { label: 'Email',        value: user?.user_email   },
+    { label: 'Phone',        value: user?.phone        },
+    { label: 'Organization', value: user?.organization },
+    { label: 'Member Since', value: new Date(user?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) },
+  ];
+  return (
+    <div className="space-y-0 divide-y divide-gray-100">
+      {rows.map(({ label, value }) => (
+        <div key={label} className="py-3">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">{label}</p>
+          <p className="text-[13px] font-medium text-gray-900">{value || <span className="text-gray-300 font-normal">Not provided</span>}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ─── Event card (organizer view) ───────────────────────────────────── */
+const OrganizerEventCard = ({ event }) => {
+  const navigate = useNavigate();
+  const date = new Date(event.event_start_date);
+  const isPast = date <= new Date();
+  const day = date.getDate();
+  const mon = date.toLocaleString('default', { month: 'short' });
+
+  return (
+    <div className="group flex bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 hover:border-gray-900 hover:shadow-[3px_3px_0_#111827]">
+      {/* Date strip */}
+      <div className="w-16 shrink-0 bg-gray-50 border-r border-gray-200 flex flex-col items-center justify-center py-4">
+        <span className="text-xl font-bold text-gray-900 leading-none">{day}</span>
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">{mon}</span>
+      </div>
+
+      {/* Body */}
+      <div className="flex flex-1 items-center justify-between gap-4 px-4 py-3 min-w-0 flex-wrap">
+        <div className="flex flex-col gap-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-[14px] font-bold text-gray-900 truncate">{event.event_title}</h3>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${
+              isPast ? 'bg-gray-100 text-gray-500' : 'bg-green-50 text-green-700'
+            }`}>
+              {isPast ? 'Completed' : 'Upcoming'}
+            </span>
+          </div>
+          <div className="flex gap-3 flex-wrap">
+            <span className="flex items-center gap-1 text-xs text-gray-400">
+              <Clock size={11} />{date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+            <span className="flex items-center gap-1 text-xs text-gray-400">
+              <MapPin size={11} /><span className="truncate max-w-[180px]">{event.event_location}</span>
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button onClick={() => navigate(`/analytics/${event.id}`)}
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-900 transition-colors">
+            <BarChart3 size={11} /> Analytics
+          </button>
+          <button onClick={() => navigate(`/event-details/${event.id}/${slugify(event.event_title, { lower: true, strict: true })}`)}
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-900 transition-colors">
+            View
+          </button>
+          <button onClick={() => navigate(`/create-event?edit=${event.id}`)}
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-gray-900 text-white text-xs font-semibold hover:bg-gray-700 transition-colors">
+            <Pencil size={11} /> Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Empty state ───────────────────────────────────────────────────── */
+const NoEvents = ({ onCreateClick }) => (
+  <div className="text-center py-16 px-6 bg-white border border-gray-200 rounded-xl">
+    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+      <Calendar size={20} className="text-gray-400" />
+    </div>
+    <p className="text-[15px] font-bold text-gray-900 mb-1">No events created yet</p>
+    <p className="text-sm text-gray-400 mb-6 max-w-xs mx-auto">Get started by creating your first event.</p>
+    <button onClick={onCreateClick}
+      className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-gray-900 text-white text-[13px] font-semibold hover:bg-gray-700 transition-colors">
+      <Plus size={13} /> Create Your First Event
+    </button>
+  </div>
+);
+
+/* ─── Loading skeleton ──────────────────────────────────────────────── */
+const LoadingSkeleton = () => (
+  <div className="min-h-screen bg-gray-50">
+    <div className="h-14 bg-white border-b border-gray-200 animate-pulse" />
+    <div className="h-[120px] bg-white border-b border-gray-200 animate-pulse" />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="h-72 bg-gray-200 rounded-xl animate-pulse" />
+        <div className="lg:col-span-2 space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-20 bg-gray-200 rounded-xl animate-pulse" />)}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+/* ─── Main page ─────────────────────────────────────────────────────── */
 const ProfilePage = () => {
   const { user, token, setAuth, logout } = useAuthStore();
   const navigate = useNavigate();
@@ -13,323 +166,123 @@ const ProfilePage = () => {
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    if (!user || !token) {
-      navigate('/login');
-      return;
-    }
-    fetchData();
+    if (!user || !token) { navigate('/login'); return; }
+    eventsAPI.getUserEvents(user.id)
+      .then(r => { if (r.data.success) setEvents(r.data.data || []); })
+      .catch(() => toast.error('Failed to load profile data'))
+      .finally(() => setLoading(false));
   }, [user, token]);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await eventsAPI.getUserEvents(user.id);
-      
-      if (response.data.success) {
-        setEvents(response.data.data || []);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toast.error('Failed to load profile data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpdateProfile = async (updatedData) => {
+  const handleUpdate = async (data) => {
     setUpdating(true);
     try {
-      const response = await authAPI.updateProfile(user.id, updatedData);
-      
-      if (response.data.success) {
-        // Update the user in the store
-        setAuth(response.data.data, token);
-        setIsEditing(false);
-        toast.success('Profile updated successfully');
-      }
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to update profile';
-      toast.error(errorMessage);
-    } finally {
-      setUpdating(false);
-    }
+      const r = await authAPI.updateProfile(user.id, data);
+      if (r.data.success) { setAuth(r.data.data, token); setIsEditing(false); toast.success('Profile updated'); }
+    } catch (e) { toast.error(e.response?.data?.message || 'Update failed'); }
+    finally { setUpdating(false); }
   };
 
-  const upcomingEvents = events.filter(e => new Date(e.event_start_date) > new Date());
-  const completedEvents = events.filter(e => new Date(e.event_start_date) <= new Date());
+  if (loading) return <LoadingSkeleton />;
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-950">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-500"></div>
-      </div>
-    );
-  }
+  const upcoming  = events.filter(e => new Date(e.event_start_date) > new Date());
+  const completed = events.filter(e => new Date(e.event_start_date) <= new Date());
+  const initials  = (user?.user_name || 'U')[0].toUpperCase();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                {user?.user_name?.charAt(0)?.toUpperCase() || 'U'}
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{user?.user_name}</h1>
-                <p className="text-gray-600 dark:text-gray-400">{user?.user_email}</p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50 w-screen">
 
-            {/* User Stats */}
-            <div className="flex space-x-8">
-              <UserStat value={events.length} label="Total Events" color="purple" />
-              <UserStat value={upcomingEvents.length} label="Upcoming" color="green" />
-              <UserStat value={completedEvents.length} label="Completed" color="blue" />
-            </div>
+      {/* ── Top bar ─────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center gap-2 h-16 text-[13px] text-gray-400">
+            <Link to="/" className="hover:text-gray-600 transition-colors"><Home size={13} /></Link>
+            <ChevronRight size={12} />
+            <span className="text-gray-900 font-medium">My Profile</span>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      {/* ── Profile header ──────────────────────────────────────────── */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-7">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            {/* Avatar + name */}
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-full bg-gray-900 flex items-center justify-center text-white text-xl font-bold shrink-0">
+                {initials}
+              </div>
+              <div>
+                <p className="text-lg font-bold text-gray-900 leading-tight">{user?.user_name}</p>
+                <p className="text-[13px] text-gray-400">{user?.user_email}</p>
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="flex gap-6 sm:gap-8">
+              {[
+                { val: events.length,     label: 'Events'    },
+                { val: upcoming.length,   label: 'Upcoming'  },
+                { val: completed.length,  label: 'Completed' },
+              ].map(({ val, label }) => (
+                <div key={label} className="text-center">
+                  <p className="text-2xl font-extrabold text-gray-900">{val}</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Content ─────────────────────────────────────────────────── */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profile Info Section */}
+
+          {/* Left — Profile info */}
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Profile Information</h2>
+            <div className="bg-white border border-gray-200 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Profile Info</p>
                 <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium text-sm transition-colors"
+                  onClick={() => setIsEditing(e => !e)}
+                  className="inline-flex items-center gap-1 text-[12px] font-semibold text-gray-500 hover:text-gray-900 transition-colors"
                 >
-                  {isEditing ? 'Cancel' : 'Edit'}
+                  {isEditing ? <><X size={12} /> Cancel</> : <><Pencil size={12} /> Edit</>}
                 </button>
               </div>
 
-              {isEditing ? (
-                <EditProfileForm
-                  user={user}
-                  onSave={handleUpdateProfile}
-                  onCancel={() => setIsEditing(false)}
-                  updating={updating}
-                />
-              ) : (
-                <ProfileDetails user={user} />
-              )}
+              {isEditing
+                ? <EditForm user={user} onSave={handleUpdate} onCancel={() => setIsEditing(false)} updating={updating} />
+                : <ProfileDetails user={user} />
+              }
             </div>
           </div>
 
-          {/* Events Section */}
+          {/* Right — Events */}
           <div className="lg:col-span-2">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Your Events</h2>
+            <div className="flex items-center justify-between mb-5">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Your Events</p>
               <button
                 onClick={() => navigate('/create-event')}
-                className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-all shadow-lg"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-900 text-white text-[12px] font-semibold hover:bg-gray-700 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span>Create Event</span>
+                <Plus size={12} /> Create Event
               </button>
             </div>
 
-            {events.length === 0 ? (
-              <NoEvents navigate={navigate} />
-            ) : (
-              <div className="space-y-4">
-                {events.map(event => (
-                  <EventCard key={event.id} event={event} />
-                ))}
-              </div>
-            )}
+            {events.length === 0
+              ? <NoEvents onCreateClick={() => navigate('/create-event')} />
+              : (
+                <div className="space-y-2.5">
+                  {events.map(ev => <OrganizerEventCard key={ev.id} event={ev} />)}
+                </div>
+              )
+            }
           </div>
         </div>
       </main>
     </div>
   );
 };
-
-// -------------------------
-// Supporting Components
-// -------------------------
-
-const UserStat = ({ value, label, color }) => {
-  const colorClasses = {
-    purple: 'text-purple-600 dark:text-purple-400',
-    green: 'text-green-600 dark:text-green-400',
-    blue: 'text-blue-600 dark:text-blue-400',
-  };
-
-  return (
-    <div className="text-center">
-      <p className={`text-3xl font-bold ${colorClasses[color]}`}>{value}</p>
-      <p className="text-gray-600 dark:text-gray-400 text-sm">{label}</p>
-    </div>
-  );
-};
-
-const ProfileDetails = ({ user }) => (
-  <div className="space-y-4">
-    <Detail label="Full Name" value={user?.user_name || 'Not provided'} />
-    <Detail label="Email" value={user?.user_email || 'Not provided'} />
-    <Detail label="Phone" value={user?.phone || 'Not provided'} />
-    <Detail label="Organization" value={user?.organization || 'Not provided'} />
-    <Detail label="Member Since" value={new Date(user?.createdAt || Date.now()).toLocaleDateString()} />
-  </div>
-);
-
-const Detail = ({ label, value }) => (
-  <div>
-    <p className="text-gray-500 dark:text-gray-400 text-sm mb-1">{label}</p>
-    <p className="font-medium text-gray-900 dark:text-white">{value}</p>
-  </div>
-);
-
-const EditProfileForm = ({ user, onSave, onCancel, updating }) => {
-  const [formData, setFormData] = useState({
-    user_name: user?.user_name || '',
-    user_email: user?.user_email || '',
-    phone: user?.phone || '',
-    organization: user?.organization || '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Input label="Full Name" name="user_name" value={formData.user_name} onChange={handleChange} />
-      <Input label="Email" name="user_email" type="email" value={formData.user_email} onChange={handleChange} />
-      <Input label="Phone" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
-      <Input label="Organization" name="organization" value={formData.organization} onChange={handleChange} />
-      <div className="flex justify-end space-x-3 pt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={updating}
-          className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white rounded-xl transition-all disabled:opacity-50"
-        >
-          {updating ? 'Saving...' : 'Save Changes'}
-        </button>
-      </div>
-    </form>
-  );
-};
-
-const Input = ({ label, name, value, onChange, type = 'text' }) => (
-  <div>
-    <label className="block text-gray-700 dark:text-gray-300 text-sm mb-1">{label}</label>
-    <input
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-white transition-all"
-      required={type === 'text' || type === 'email'}
-    />
-  </div>
-);
-
-const NoEvents = ({ navigate }) => (
-  <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 text-center">
-    <div className="mx-auto w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    </div>
-    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Events Created Yet</h3>
-    <p className="text-gray-600 dark:text-gray-400 mb-6">
-      You haven't created any events. Get started by creating your first event!
-    </p>
-    <button
-      onClick={() => navigate('/create-event')}
-      className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-lg"
-    >
-      Create Your First Event
-    </button>
-  </div>
-);
-
-const EventCard = ({ event }) => {
-  const navigate = useNavigate();
-  const eventDate = new Date(event.event_start_date);
-  const isPast = eventDate <= new Date();
-
-  return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-      <div className="p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-start space-x-4">
-            <div className="bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl p-3 text-center min-w-[70px] text-white">
-              <p className="text-2xl font-bold">{eventDate.getDate()}</p>
-              <p className="text-sm uppercase">{eventDate.toLocaleString('default', { month: 'short' })}</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{event.event_title}</h3>
-              <p className="text-gray-600 dark:text-gray-400 flex items-center space-x-2 mt-1">
-                <Clock className="h-4 w-4" />
-                <span>{eventDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-              </p>
-              <p className="text-gray-600 dark:text-gray-400 flex items-center space-x-2 mt-1">
-                <MapPin className="h-4 w-4" />
-                <span>{event.event_location}</span>
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-              isPast 
-                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400' 
-                : 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
-            }`}>
-              {isPast ? 'Completed' : 'Upcoming'}
-            </span>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => navigate(`/analytics/${event.id}`)}
-                className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-800 dark:text-purple-400 rounded-xl transition-colors font-medium flex items-center gap-1"
-              >
-                <BarChart3 className="w-4 h-4" />
-                Analytics
-              </button>
-              <button
-                onClick={() => navigate(`/event-details/${event.id}/${slugify(event.event_title)}`)}
-                className="px-4 py-2 bg-primary-100 dark:bg-primary-900/30 hover:bg-primary-200 dark:hover:bg-primary-900/50 text-primary-800 dark:text-primary-400 rounded-xl transition-colors font-medium"
-              >
-                View
-              </button>
-              <button
-                onClick={() => navigate(`/create-event?edit=${event.id}`)}
-                className="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-white rounded-xl transition-colors font-medium"
-              >
-                Edit
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Helper imports for EventCard
-import { Clock, MapPin, BarChart3 } from 'lucide-react';
-import slugify from 'slugify';
 
 export default ProfilePage;

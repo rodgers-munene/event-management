@@ -245,7 +245,7 @@ const EventListings = () => {
       {/* ── Top bar ───────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center gap-4 h-14">
+          <div className="flex items-center flex-wrap gap-4 min-h-16 p-1">
             {/* Breadcrumb */}
             <div className="flex items-center gap-1.5 text-[13px] text-gray-400 shrink-0">
               <Link to="/" className="hover:text-gray-600 transition-colors flex items-center">

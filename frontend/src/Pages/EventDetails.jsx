@@ -13,7 +13,6 @@ import slugify from "slugify";
 import ReviewsSection from "../Components/ReviewsSection.jsx";
 import ShareModal from "../Components/ShareModal.jsx";
 
-/* ─── Helpers ───────────────────────────────────────────────────────── */
 const fmtDate = (d) => {
   if (!d) return "";
   const date = new Date(d), now = new Date();
@@ -23,7 +22,6 @@ const fmtDate = (d) => {
 };
 const fmtTime = (d) => d ? new Date(d).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
 
-/* ─── Skeleton ──────────────────────────────────────────────────────── */
 const LoadingSkeleton = () => (
   <div className="min-h-screen bg-gray-50">
     <div className="h-14 bg-white border-b border-gray-200 animate-pulse" />
@@ -41,7 +39,6 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-/* ─── Detail row ────────────────────────────────────────────────────── */
 const DetailRow = ({ icon: Icon, label, value }) => (
   <div className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
     <Icon size={15} className="text-gray-400 shrink-0 mt-0.5" />
@@ -52,7 +49,6 @@ const DetailRow = ({ icon: Icon, label, value }) => (
   </div>
 );
 
-/* ─── Main component ────────────────────────────────────────────────── */
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -149,7 +145,7 @@ const EventDetails = () => {
   return (
     <div className="min-h-screen bg-gray-50 w-screen">
 
-      {/* ── Top bar ─────────────────────────────────────────────────── */}
+      {/* Top bar */}
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-2 h-14 text-[13px] text-gray-400">
@@ -162,16 +158,15 @@ const EventDetails = () => {
         </div>
       </header>
 
-      {/* ── Hero image ──────────────────────────────────────────────── */}
+      {/* Hero image — fixed: absolute img + absolute overlay, no nested relative wrappers */}
       <div className="relative h-[360px] md:h-[460px] bg-gray-200 overflow-hidden">
-        {/* Image */}
         {!imgError && (
           <img
             src={event.image_url || "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&q=80&fm=webp"}
             alt={event.event_title}
             onLoad={() => setImgLoaded(true)}
             onError={() => setImgError(true)}
-            className={`w-full h-full object-cover transition-opacity duration-500 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
           />
         )}
         {imgError && (
@@ -179,13 +174,10 @@ const EventDetails = () => {
             <ImageOff size={40} />
           </div>
         )}
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
-        {/* Overlay content */}
         <div className="absolute bottom-0 left-0 right-0 p-6 sm:px-8">
           <div className="max-w-7xl mx-auto">
-            {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-3">
               {isFree && <span className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase bg-yellow-300 text-gray-900">Free</span>}
               {isSoon && <span className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase bg-orange-500 text-white">Soon</span>}
@@ -204,34 +196,31 @@ const EventDetails = () => {
         </div>
       </div>
 
-      {/* ── Body ────────────────────────────────────────────────────── */}
+      {/* Body */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* Left column */}
+          {/* Left */}
           <div className="lg:col-span-2 space-y-4">
 
-            {/* About */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
               className="bg-white border border-gray-200 rounded-xl p-6">
               <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-3">About</p>
               <p className="text-[15px] text-gray-700 leading-relaxed whitespace-pre-line">{event.event_description}</p>
             </motion.div>
 
-            {/* Details */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.07 }}
               className="bg-white border border-gray-200 rounded-xl p-6">
               <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-1">Event Details</p>
               <div className="mt-2">
                 <DetailRow icon={Calendar} label="Date"     value={fmtDate(event.event_start_date)} />
-                <DetailRow icon={Clock}    label="Time"     value={`${fmtTime(event.event_start_date)}${event.event_end_date ? ` – ${fmtTime(event.event_end_date)}` : ''}`} />
-                {duration && <DetailRow icon={Clock}  label="Duration" value={duration} />}
+                <DetailRow icon={Clock}    label="Time"     value={`${fmtTime(event.event_start_date)}${event.event_end_date ? ` – ${fmtTime(event.event_end_date)}` : ""}`} />
+                {duration && <DetailRow icon={Clock} label="Duration" value={duration} />}
                 <DetailRow icon={MapPin}   label="Location" value={event.event_location || "TBD"} />
                 <DetailRow icon={Users}    label="Capacity" value={`${event.registeredCount || 0} / ${event.capacity || "Unlimited"}`} />
               </div>
             </motion.div>
 
-            {/* Organizer */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
               className="bg-white border border-gray-200 rounded-xl p-6">
               <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">Organizer</p>
@@ -254,7 +243,6 @@ const EventDetails = () => {
               </div>
             </motion.div>
 
-            {/* Location */}
             {event.event_location && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}
                 className="bg-white border border-gray-200 rounded-xl p-6">
@@ -267,11 +255,10 @@ const EventDetails = () => {
               </motion.div>
             )}
 
-            {/* Reviews */}
             <ReviewsSection eventId={parseInt(id)} />
           </div>
 
-          {/* Right column — sticky booking card */}
+          {/* Right — sticky booking card */}
           <div className="lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -279,9 +266,7 @@ const EventDetails = () => {
               transition={{ delay: 0.08 }}
               className="sticky top-20 space-y-3"
             >
-              {/* Booking card */}
               <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                {/* Price */}
                 <div className="px-5 py-4 border-b border-gray-100">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-1">Price</p>
                   <div className="flex items-baseline gap-1.5">
@@ -292,7 +277,6 @@ const EventDetails = () => {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="p-5 space-y-2">
                   {isOwner ? (
                     <>
@@ -303,11 +287,8 @@ const EventDetails = () => {
                       <Link to={`/create-event?edit=${id}`} className="flex items-center justify-center gap-2 w-full py-2.5 rounded bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition-colors">
                         <Edit size={14} /> Edit Event
                       </Link>
-                      <button
-                        onClick={handleDelete}
-                        disabled={deleting}
-                        className="flex items-center justify-center gap-2 w-full py-2.5 rounded border border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50"
-                      >
+                      <button onClick={handleDelete} disabled={deleting}
+                        className="flex items-center justify-center gap-2 w-full py-2.5 rounded border border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50">
                         <Trash2 size={14} /> {deleting ? "Deleting…" : "Delete Event"}
                       </button>
                     </>
@@ -320,10 +301,8 @@ const EventDetails = () => {
                       <Link to={payHref} className="flex items-center justify-center gap-2 w-full py-2.5 rounded bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition-colors">
                         <Ticket size={14} /> Proceed to Payment
                       </Link>
-                      <button
-                        onClick={handleCancelRegistration}
-                        className="flex items-center justify-center w-full py-2.5 rounded border border-gray-200 text-gray-700 text-sm font-semibold hover:border-gray-900 transition-colors"
-                      >
+                      <button onClick={handleCancelRegistration}
+                        className="flex items-center justify-center w-full py-2.5 rounded border border-gray-200 text-gray-700 text-sm font-semibold hover:border-gray-900 transition-colors">
                         Cancel Registration
                       </button>
                     </>
@@ -339,10 +318,8 @@ const EventDetails = () => {
                     </>
                   ) : (
                     <>
-                      <button
-                        onClick={handleRegister}
-                        className="flex items-center justify-center gap-2 w-full py-2.5 rounded bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition-colors"
-                      >
+                      <button onClick={handleRegister}
+                        className="flex items-center justify-center gap-2 w-full py-2.5 rounded bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition-colors">
                         <Ticket size={14} /> Register Now
                       </button>
                       <Link to={payHref} className="flex items-center justify-center w-full py-2.5 rounded bg-yellow-300 text-gray-900 text-sm font-semibold hover:bg-yellow-400 transition-colors">
@@ -351,15 +328,12 @@ const EventDetails = () => {
                     </>
                   )}
 
-                  <button
-                    onClick={() => setShowShare(true)}
-                    className="flex items-center justify-center gap-2 w-full py-2 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors"
-                  >
+                  <button onClick={() => setShowShare(true)}
+                    className="flex items-center justify-center gap-2 w-full py-2 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors">
                     <Share2 size={13} /> Share Event
                   </button>
                 </div>
 
-                {/* Trust signals */}
                 <div className="px-5 pb-5 pt-0 border-t border-gray-100 mt-1 space-y-2.5">
                   <div className="flex items-start gap-2.5 pt-4">
                     <Shield size={13} className="text-green-600 shrink-0 mt-0.5" />
@@ -378,10 +352,9 @@ const EventDetails = () => {
                 </div>
               </div>
 
-              {/* Help card */}
               <div className="bg-white border border-gray-200 rounded-xl p-5">
                 <p className="text-[13px] font-bold text-gray-900 mb-1">Need Help?</p>
-                <p className="text-xs text-gray-400 mb-3 leading-relaxed">Have questions about this event? Reach out to the organizer directly.</p>
+                <p className="text-xs text-gray-400 mb-3 leading-relaxed">Have questions? Reach out to the organizer directly.</p>
                 <button className="flex items-center justify-center gap-1.5 w-full py-2 rounded border border-gray-200 text-xs font-semibold text-gray-700 hover:border-gray-900 transition-colors">
                   <Mail size={12} /> Contact Organizer
                 </button>

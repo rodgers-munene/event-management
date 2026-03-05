@@ -1,8 +1,77 @@
 import { useState, useEffect } from 'react';
-import { Star, Send, ThumbsUp, Flag, Trash2, Edit } from 'lucide-react';
+import { Star, Send, ThumbsUp, Flag, Trash2, Pencil, Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import useAuthStore from '../store/authStore.js';
 
+/* ─── Star row ──────────────────────────────────────────────────────── */
+const Stars = ({ rating, size = 13, interactive = false, onChange }) => (
+  <div className="flex gap-0.5">
+    {[1, 2, 3, 4, 5].map(s => (
+      <button
+        key={s}
+        type={interactive ? 'button' : undefined}
+        onClick={interactive ? () => onChange(s) : undefined}
+        className={interactive ? 'focus:outline-none' : undefined}
+        tabIndex={interactive ? 0 : -1}
+      >
+        <Star
+          size={size}
+          className={s <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}
+        />
+      </button>
+    ))}
+  </div>
+);
+
+/* ─── Single review ─────────────────────────────────────────────────── */
+const ReviewCard = ({ review, isOwner, onHelpful, onDelete, onEdit }) => (
+  <div className="py-5 border-b border-gray-100 last:border-0">
+    <div className="flex items-start justify-between gap-3 mb-2">
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
+          {(review.user_name || 'A')[0].toUpperCase()}
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-[13px] font-bold text-gray-900">{review.user_name}</p>
+            {review.isVerified && (
+              <span className="px-1.5 py-0.5 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold rounded uppercase tracking-wide">
+                Verified
+              </span>
+            )}
+          </div>
+          <p className="text-[11px] text-gray-400">
+            {new Date(review.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </p>
+        </div>
+      </div>
+      <Stars rating={review.rating} />
+    </div>
+
+    <p className="text-[14px] text-gray-600 leading-relaxed mb-3 ml-11">{review.comment}</p>
+
+    <div className="flex items-center gap-4 ml-11">
+      <button onClick={onHelpful} className="flex items-center gap-1 text-[12px] text-gray-400 hover:text-gray-700 transition-colors">
+        <ThumbsUp size={11} /> Helpful ({review.helpful})
+      </button>
+      <button className="flex items-center gap-1 text-[12px] text-gray-400 hover:text-red-500 transition-colors">
+        <Flag size={11} /> Report
+      </button>
+      {isOwner && (
+        <>
+          <button onClick={onEdit} className="flex items-center gap-1 text-[12px] text-gray-400 hover:text-gray-700 transition-colors">
+            <Pencil size={11} /> Edit
+          </button>
+          <button onClick={onDelete} className="flex items-center gap-1 text-[12px] text-red-400 hover:text-red-600 transition-colors">
+            <Trash2 size={11} /> Delete
+          </button>
+        </>
+      )}
+    </div>
+  </div>
+);
+
+/* ─── Main ──────────────────────────────────────────────────────────── */
 const ReviewsSection = ({ eventId }) => {
   const { user, isAuthenticated } = useAuthStore();
   const [reviews, setReviews] = useState([]);
@@ -12,325 +81,119 @@ const ReviewsSection = ({ eventId }) => {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    fetchReviews();
+    setLoading(true);
+    // Replace with: const res = await reviewsAPI.getByEvent(eventId); setReviews(res.data.data || []);
+    setTimeout(() => {
+      setReviews([
+        { id: 1, user_name: 'John Doe',   rating: 5, comment: 'Amazing event! Learned so much and networked with great people.', created_at: new Date().toISOString(),                    helpful: 12, isVerified: true },
+        { id: 2, user_name: 'Jane Smith', rating: 4, comment: 'Great content and speakers. Venue could have been better organized.', created_at: new Date(Date.now() - 86400000).toISOString(), helpful: 8,  isVerified: true },
+      ]);
+      setLoading(false);
+    }, 0);
   }, [eventId]);
 
-  const fetchReviews = async () => {
-    try {
-      setLoading(true);
-      // Mock data - replace with actual API call
-      // const response = await reviewsAPI.getByEvent(eventId);
-      // setReviews(response.data.data || []);
-      
-      // Temporary mock data for demonstration
-      setReviews([
-        {
-          id: 1,
-          user_name: 'John Doe',
-          rating: 5,
-          comment: 'Amazing event! Learned so much and networked with great people.',
-          created_at: new Date().toISOString(),
-          helpful: 12,
-          isVerified: true,
-        },
-        {
-          id: 2,
-          user_name: 'Jane Smith',
-          rating: 4,
-          comment: 'Great content and speakers. Venue could have been better organized.',
-          created_at: new Date(Date.now() - 86400000).toISOString(),
-          helpful: 8,
-          isVerified: true,
-        },
-      ]);
-    } catch (error) {
-      console.error('Failed to fetch reviews:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmitReview = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!isAuthenticated) {
-      toast.error('Please login to write a review');
-      return;
-    }
-
-    if (!newReview.comment.trim()) {
-      toast.error('Please write a comment');
-      return;
-    }
-
+    if (!isAuthenticated) { toast.error('Please login to write a review'); return; }
+    if (!newReview.comment.trim()) { toast.error('Please write a comment'); return; }
+    setSubmitting(true);
     try {
-      setSubmitting(true);
       // await reviewsAPI.create({ eventId, ...newReview });
-      
-      // Optimistic update
-      const review = {
-        id: Date.now(),
-        user_name: user?.user_name || 'Anonymous',
-        rating: newReview.rating,
-        comment: newReview.comment,
-        created_at: new Date().toISOString(),
-        helpful: 0,
-        isVerified: true,
-      };
-      
-      setReviews([review, ...reviews]);
+      const review = { id: Date.now(), user_name: user?.user_name || 'Anonymous', rating: newReview.rating, comment: newReview.comment, created_at: new Date().toISOString(), helpful: 0, isVerified: true };
+      setReviews(p => [review, ...p]);
       setNewReview({ rating: 5, comment: '' });
-      toast.success('Review submitted successfully!');
-    } catch (error) {
-      toast.error('Failed to submit review');
-    } finally {
-      setSubmitting(false);
-    }
+      setEditingId(null);
+      toast.success('Review submitted');
+    } catch { toast.error('Failed to submit review'); }
+    finally { setSubmitting(false); }
   };
 
-  const handleHelpful = async (reviewId) => {
-    // await reviewsAPI.markHelpful(reviewId);
-    setReviews(reviews.map(r => 
-      r.id === reviewId ? { ...r, helpful: r.helpful + 1 } : r
-    ));
-  };
-
-  const handleDelete = async (reviewId) => {
-    if (!window.confirm('Delete this review?')) return;
-    // await reviewsAPI.delete(reviewId);
-    setReviews(reviews.filter(r => r.id !== reviewId));
-    toast.success('Review deleted');
-  };
-
-  const averageRating = reviews.length > 0
-    ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-    : 0;
+  const avg = reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mt-8">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-        Reviews & Ratings
-      </h2>
+    <div className="bg-white border border-gray-200 rounded-xl p-6">
+      <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-5">Reviews & Ratings</p>
 
-      {/* Rating Summary */}
-      <div className="flex items-center gap-6 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-        <div className="text-center">
-          <div className="text-5xl font-bold text-gray-900 dark:text-white mb-2">
-            {averageRating.toFixed(1)}
-          </div>
-          <div className="flex gap-1 justify-center mb-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                className={`w-5 h-5 ${
-                  star <= Math.round(averageRating)
-                    ? 'fill-yellow-400 text-yellow-400'
-                    : 'text-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
-          </p>
+      {/* Summary */}
+      <div className="flex items-center gap-6 mb-6 pb-6 border-b border-gray-100">
+        <div className="text-center shrink-0">
+          <p className="text-4xl font-extrabold text-gray-900 leading-none mb-1">{avg.toFixed(1)}</p>
+          <Stars rating={Math.round(avg)} />
+          <p className="text-[11px] text-gray-400 mt-1">{reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}</p>
         </div>
 
-        {/* Rating Distribution */}
-        <div className="flex-1 space-y-2">
-          {[5, 4, 3, 2, 1].map((rating) => {
-            const count = reviews.filter(r => r.rating === rating).length;
-            const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+        <div className="flex-1 space-y-1.5">
+          {[5, 4, 3, 2, 1].map(n => {
+            const count = reviews.filter(r => r.rating === n).length;
+            const pct = reviews.length ? (count / reviews.length) * 100 : 0;
             return (
-              <div key={rating} className="flex items-center gap-3">
-                <span className="text-sm text-gray-600 dark:text-gray-400 w-3">{rating}</span>
-                <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div
-                    className="bg-yellow-400 h-2 rounded-full transition-all"
-                    style={{ width: `${percentage}%` }}
-                  />
+              <div key={n} className="flex items-center gap-2">
+                <span className="text-[11px] text-gray-400 w-2.5">{n}</span>
+                <Star size={9} className="text-yellow-400 fill-yellow-400 shrink-0" />
+                <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-yellow-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
                 </div>
-                <span className="text-sm text-gray-600 dark:text-gray-400 w-8">{count}</span>
+                <span className="text-[11px] text-gray-400 w-4 text-right">{count}</span>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Write Review Form */}
+      {/* Write review */}
       {isAuthenticated ? (
-        <form onSubmit={handleSubmitReview} className="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Write a Review
-          </h3>
-          
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Your Rating
-            </label>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => setNewReview({ ...newReview, rating: star })}
-                  className="focus:outline-none transition-transform hover:scale-110"
-                >
-                  <Star
-                    className={`w-8 h-8 ${
-                      star <= newReview.rating
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-300'
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
+        <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">Write a Review</p>
+
+          <div className="mb-3">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">Your Rating</p>
+            <Stars rating={newReview.rating} size={22} interactive onChange={r => setNewReview(p => ({ ...p, rating: r }))} />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Your Review
-            </label>
+          <div className="mb-3">
             <textarea
               value={newReview.comment}
-              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-              placeholder="Share your experience with this event..."
-              rows={4}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+              onChange={e => setNewReview(p => ({ ...p, comment: e.target.value }))}
+              placeholder="Share your experience…"
+              rows={3}
+              className="w-full px-3 py-2.5 border border-gray-200 rounded text-[13px] text-gray-900 placeholder-gray-300 focus:outline-none focus:border-gray-900 transition-colors bg-white resize-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={submitting || !newReview.comment.trim()}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl font-medium transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-gray-900 text-white text-[12px] font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Send className="w-4 h-4" />
-            {submitting ? 'Submitting...' : 'Submit Review'}
+            {submitting ? <><Loader2 size={12} className="animate-spin" /> Submitting…</> : <><Send size={12} /> Submit Review</>}
           </button>
         </form>
       ) : (
-        <div className="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Login to write a review and share your experience
-          </p>
-          <button className="text-primary-600 hover:text-primary-700 font-medium">
-            Login Now
-          </button>
+        <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+          <p className="text-[13px] text-gray-400 mb-2">Login to share your experience</p>
+          <a href="/login" className="text-[13px] font-semibold text-gray-900 hover:underline">Login</a>
         </div>
       )}
 
-      {/* Reviews List */}
-      <div className="space-y-6">
-        {loading ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            Loading reviews...
-          </div>
-        ) : reviews.length === 0 ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            No reviews yet. Be the first to review this event!
-          </div>
-        ) : (
-          reviews.map((review) => (
+      {/* List */}
+      {loading ? (
+        <p className="text-center text-[13px] text-gray-400 py-6">Loading reviews…</p>
+      ) : reviews.length === 0 ? (
+        <p className="text-center text-[13px] text-gray-400 py-6">No reviews yet. Be the first!</p>
+      ) : (
+        <div>
+          {reviews.map(r => (
             <ReviewCard
-              key={review.id}
-              review={review}
-              isOwner={user?.id === review.user_id}
-              onHelpful={() => handleHelpful(review.id)}
-              onDelete={() => handleDelete(review.id)}
-              onEdit={() => {
-                setEditingId(review.id);
-                setNewReview({ rating: review.rating, comment: review.comment });
-              }}
+              key={r.id}
+              review={r}
+              isOwner={user?.id === r.user_id}
+              onHelpful={() => setReviews(p => p.map(x => x.id === r.id ? { ...x, helpful: x.helpful + 1 } : x))}
+              onDelete={() => { if (window.confirm('Delete this review?')) { setReviews(p => p.filter(x => x.id !== r.id)); toast.success('Review deleted'); }}}
+              onEdit={() => { setEditingId(r.id); setNewReview({ rating: r.rating, comment: r.comment }); }}
             />
-          ))
-        )}
-      </div>
-    </div>
-  );
-};
-
-const ReviewCard = ({ review, isOwner, onHelpful, onDelete, onEdit }) => {
-  return (
-    <div className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold">
-            {review.user_name?.charAt(0)?.toUpperCase() || 'A'}
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="font-semibold text-gray-900 dark:text-white">
-                {review.user_name}
-              </p>
-              {review.isVerified && (
-                <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs rounded-full font-medium">
-                  Verified Attendee
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {new Date(review.created_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
-          </div>
+          ))}
         </div>
-
-        <div className="flex items-center gap-2">
-          <div className="flex gap-0.5">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                className={`w-4 h-4 ${
-                  star <= review.rating
-                    ? 'fill-yellow-400 text-yellow-400'
-                    : 'text-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-        {review.comment}
-      </p>
-
-      <div className="flex items-center gap-4">
-        <button
-          onClick={onHelpful}
-          className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 transition-colors"
-        >
-          <ThumbsUp className="w-4 h-4" />
-          Helpful ({review.helpful})
-        </button>
-        <button className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 transition-colors">
-          <Flag className="w-4 h-4" />
-          Report
-        </button>
-        {isOwner && (
-          <>
-            <button
-              onClick={onEdit}
-              className="flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700 transition-colors"
-            >
-              <Edit className="w-4 h-4" />
-              Edit
-            </button>
-            <button
-              onClick={onDelete}
-              className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700 transition-colors"
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete
-            </button>
-          </>
-        )}
-      </div>
+      )}
     </div>
   );
 };
