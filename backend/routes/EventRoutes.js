@@ -1,4 +1,4 @@
-const { getAllEvents, getEvent, postEvent, updateEvent, deleteEvent, getMyEvents } = require('../controllers/EventController');
+const { getAllEvents, getEvent, postEvent, updateEvent, deleteEvent, getMyEvents, getEventCategories } = require('../controllers/EventController');
 const validateToken = require('../middleware/validateToken');
 const validate = require('../middleware/validate');
 const { eventLimiter } = require('../middleware/rateLimiter');
@@ -116,6 +116,34 @@ router.get('/:user_id/me', validateToken, getMyEvents);
  *         description: Event not found
  */
 router.get('/:id', validate(getEventSchema), getEvent);
+
+
+// get categories for event creation form
+/**
+ * @swagger
+ * /api/events/categories:
+ *   get:
+ *     summary: Get event categories
+ *     tags: [Events]
+ *     responses:
+ *       200:
+ *         description: List of event categories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *      500:
+ *         description: Internal server error
+ * /// This endpoint is used to fetch event categories for the event creation form. It does not require authentication and returns a list of predefined categories that users can choose from when creating an event.
+ */
+router.get('/categories', getEventCategories);
 
 /**
  * @swagger

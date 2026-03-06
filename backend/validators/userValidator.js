@@ -23,7 +23,7 @@ const loginSchema = z.object({
 // Schema for updating user
 const updateUserSchema = z.object({
   params: z.object({
-    id: z.string().or(z.number()).transform(val => Number(val))
+    id: z.union([z.string(), z.number()]).transform(val => Number(val)).refine(val => !isNaN(val), "ID must be a valid number")
   }),
   body: z.object({
     user_name: z.string().min(3).max(100).optional(),

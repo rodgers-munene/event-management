@@ -3,7 +3,7 @@ const { z } = require('zod');
 // Schema for creating an event
 const createEventSchema = z.object({
   body: z.object({
-    user_id: z.string().or(z.number()).transform(val => Number(val)),
+    user_id: z.union([z.string(), z.number()]).transform(val => Number(val)).refine(val => !isNaN(val), "user_id must be a valid number"),
     event_title: z.string().min(3, 'Event title must be at least 3 characters').max(200),
     event_description: z.string().max(5000).optional(),
     event_start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/, 'Invalid start date format. Use YYYY-MM-DDTHH:MM:SS'),
@@ -29,7 +29,7 @@ const createEventSchema = z.object({
 // Schema for updating an event
 const updateEventSchema = z.object({
   params: z.object({
-    id: z.string().or(z.number()).transform(val => Number(val))
+    id: z.coerce.number().refine(val => !isNaN(val), "ID must be a valid number")
   }),
   body: z.object({
     event_title: z.string().min(3).max(200).optional(),
@@ -56,7 +56,7 @@ const updateEventSchema = z.object({
 // Schema for getting an event
 const getEventSchema = z.object({
   params: z.object({
-    id: z.string().or(z.number()).transform(val => Number(val))
+    id: z.coerce.number().refine(val => !isNaN(val), "ID must be a valid number")
   })
 });
 
@@ -65,11 +65,11 @@ const paginationSchema = z.object({
   query: z.object({
     limit: z.preprocess(
       (val) => Number(val),
-      z.number().gte(1).lte(100)
+      z.number().gte(1).lte(100).refine(val => !isNaN(val), "limit must be a valid number")
     ).optional(),
     page: z.preprocess(
       (val) => Number(val),
-      z.number().gte(1)
+      z.number().gte(1).refine(val => !isNaN(val), "page must be a valid number")
     ).optional()
   })
 });

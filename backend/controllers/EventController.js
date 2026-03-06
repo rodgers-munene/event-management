@@ -95,6 +95,20 @@ const getMyEvents = async (req, res, next) => {
   }
 }
 
+// get unique event categories
+const getEventCategories = async (req, res, next) => {
+  try {
+    const [rows] = await db.query("SELECT DISTINCT event_category FROM events");
+    const categories = rows.map(row => row.event_category).filter(category => category !== null);
+    res.status(200).json({
+      success: true,
+      data: categories
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 const postEvent = async (req, res, next) => {
   try {
     // Validate request body
@@ -261,5 +275,6 @@ module.exports = {
   postEvent,
   updateEvent,
   deleteEvent,
-  getMyEvents
+  getMyEvents,
+  getEventCategories
 };
