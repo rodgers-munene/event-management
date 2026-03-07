@@ -66,7 +66,6 @@ const EventAnalytics = () => {
           setAnalytics(analyticsResponse.data.data);
         }
       } catch (err) {
-        // Analytics endpoint might not exist, use calculated data
         console.log('Analytics endpoint not available, using calculated data');
       }
     } catch (error) {
