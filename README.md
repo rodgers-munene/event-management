@@ -31,25 +31,22 @@ A modern, responsive Event Management System built with **React** and **Vite**. 
 ## Landing Page
 
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/08328673-d294-4caf-b63d-dfb22b0ee8e7" />
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/7c20ffcd-967f-4b15-8022-76496a887e87" />
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/620bf586-039c-43e6-a67f-ae7a43dfd71c" />
 
-![Screenshot (260)](https://github.com/user-attachments/assets/71be64d8-1ca0-4600-b2a2-1b6e615011c4)
-![Screenshot (261)](https://github.com/user-attachments/assets/cea972c8-0958-402d-ab23-59621e71e6f9)
 
 
 ## Create Events page
 
-![Screenshot (262)](https://github.com/user-attachments/assets/6bbc863b-ac00-4edf-ab64-1f8c4dec15c9)
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/9c5dc765-bde2-4043-a15e-d1a3d95dacf1" />
 
 ## Event Listings Page
 
-![WhatsApp Image 2025-01-21 at 08 56 51_5cbf75b0](https://github.com/user-attachments/assets/70dd18a5-608e-40d6-ad3a-6b9c0c9e9693)
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/93fad1ae-ecf6-4ddc-a43d-0671cc9f1402" />
 
+## Payments Page
 
-## Payments Page (in dark mode)
-
-![Screenshot (268)](https://github.com/user-attachments/assets/40b5f66a-4d66-4bbb-b137-f7261b55d5a2)
-
-
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/219aa925-96c5-4530-b877-05f628fb0aaf" />
 
 
 
