@@ -23,14 +23,15 @@ A modern, responsive Event Management System built with **React** and **Vite**. 
 
 ## Login & Registration page
 
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/76f45e3d-b512-4b7a-ae56-28ebbb3b82d6" />
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/77a190a0-6da3-43ac-b97f-b945fef3b891" />
 
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/ad561129-bd7c-4403-982b-a875f36aee4f" />
 
-![Screenshot (265)](https://github.com/user-attachments/assets/a66617c8-34f2-4ddf-b3b5-41582e2eb057)
 
 ## Landing Page
 
-![Screenshot (259)](src="https://github.com/user-attachments/assets/ddf226c5-acc0-4d5e-958c-465482b7ae6a")
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/08328673-d294-4caf-b63d-dfb22b0ee8e7" />
+
 ![Screenshot (260)](https://github.com/user-attachments/assets/71be64d8-1ca0-4600-b2a2-1b6e615011c4)
 ![Screenshot (261)](https://github.com/user-attachments/assets/cea972c8-0958-402d-ab23-59621e71e6f9)
 
