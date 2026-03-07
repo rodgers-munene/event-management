@@ -31,7 +31,7 @@ A modern, responsive Event Management System built with **React** and **Vite**. 
 ## Landing Page
 
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/08328673-d294-4caf-b63d-dfb22b0ee8e7" />
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/7c20ffcd-967f-4b15-8022-76496a887e87" />
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/4a8bc555-ab65-4477-9d1c-c9600f820928" />
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/620bf586-039c-43e6-a67f-ae7a43dfd71c" />
 
 
