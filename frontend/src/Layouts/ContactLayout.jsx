@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 const ContactLayout = ({ children }) => {
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <main>
         {children}
         <EventListings />

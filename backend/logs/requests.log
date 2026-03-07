@@ -2001,3 +2001,54 @@
 {"ip":"::1","level":"info","message":"Incoming request","method":"GET","path":"/api/events","service":"event-management-api","timestamp":"2026-03-06 22:57:48","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"}
 {"level":"http","message":"::1 - - [06/Mar/2026:19:57:48 +0000] \"GET /api/events?limit=6&page=1 HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","service":"event-management-api","timestamp":"2026-03-06 22:57:48"}
 {"level":"info","message":"SIGINT signal received: starting graceful shutdown","service":"event-management-api","timestamp":"2026-03-06 23:00:16"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:17:47"}
+{"environment":"development","level":"info","message":"Server started","pid":17493,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:17:47"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:18:33"}
+{"environment":"development","level":"info","message":"Server started","pid":17740,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:18:33"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:18:37"}
+{"environment":"development","level":"info","message":"Server started","pid":17806,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:18:37"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:19:19"}
+{"environment":"development","level":"info","message":"Server started","pid":18020,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:19:19"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:19:26"}
+{"environment":"development","level":"info","message":"Server started","pid":18097,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:19:26"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:19:30"}
+{"environment":"development","level":"info","message":"Server started","pid":18140,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:19:30"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:19:38"}
+{"environment":"development","level":"info","message":"Server started","pid":18246,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:19:38"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:19:51"}
+{"environment":"development","level":"info","message":"Server started","pid":18357,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:19:51"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:20:00"}
+{"environment":"development","level":"info","message":"Server started","pid":18481,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:20:00"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:20:07"}
+{"environment":"development","level":"info","message":"Server started","pid":18553,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:20:07"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:20:13"}
+{"environment":"development","level":"info","message":"Server started","pid":18622,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:20:13"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:20:23"}
+{"environment":"development","level":"info","message":"Server started","pid":18741,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:20:23"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:00"}
+{"environment":"development","level":"info","message":"Server started","pid":18975,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:00"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:08"}
+{"environment":"development","level":"info","message":"Server started","pid":19051,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:08"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:14"}
+{"environment":"development","level":"info","message":"Server started","pid":19116,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:14"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:19"}
+{"environment":"development","level":"info","message":"Server started","pid":19166,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:19"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:28"}
+{"environment":"development","level":"info","message":"Server started","pid":19301,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:28"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:35"}
+{"environment":"development","level":"info","message":"Server started","pid":19366,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:35"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:37"}
+{"environment":"development","level":"info","message":"Server started","pid":19418,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:37"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:41"}
+{"environment":"development","level":"info","message":"Server started","pid":19466,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:41"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:49"}
+{"environment":"development","level":"info","message":"Server started","pid":19538,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:49"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:21:59"}
+{"environment":"development","level":"info","message":"Server started","pid":19704,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:21:59"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:22:03"}
+{"environment":"development","level":"info","message":"Server started","pid":19790,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:22:03"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:22:08"}
+{"environment":"development","level":"info","message":"Server started","pid":19856,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:22:08"}
+{"level":"warn","message":"Redis not configured. Running without cache.","service":"event-management-api","timestamp":"2026-03-07 13:22:11"}
+{"environment":"development","level":"info","message":"Server started","pid":19881,"port":"5000","service":"event-management-api","timestamp":"2026-03-07 13:22:11"}
+{"level":"info","message":"SIGINT signal received: starting graceful shutdown","service":"event-management-api","timestamp":"2026-03-07 13:22:32"}

@@ -6,7 +6,7 @@ import Footer from '../Components/Footer'
 
 const RouteLayout = ( {children} ) => {
   return (
-    <div className='w-full flex flex-col items-center'>
+    <div className='w-full flex flex-col items-center overflow-x-hidden'>
       <Navbar />
       <ThemeToggle />
 
