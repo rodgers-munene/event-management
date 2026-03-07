@@ -8,7 +8,7 @@ const RouteLayout = ( {children} ) => {
   return (
     <div className='w-full flex flex-col items-center overflow-x-hidden'>
       <Navbar />
-      <ThemeToggle />
+      {/* <ThemeToggle /> */}
 
       <main>
         {children}
